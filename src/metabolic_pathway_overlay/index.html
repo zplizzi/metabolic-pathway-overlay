@@ -348,17 +348,6 @@ let METABOLITES = {};
 let ANALYTE_DATA = {};
 let ANALYTE_ALIASES = {};
 
-const BADGE_STYLES = {
-  high:     { fill: "#c0392b", text: "#fff" },
-  low:      { fill: "#3498db", text: "#fff" },
-  supp:     { fill: "#1a3a6b", text: "#fff" },
-  inferred: { fill: "#c0392b", text: "#fff" },
-  req:      { fill: "#d6b656", text: "#7A5A00" },
-  ok:       { fill: "#5DAA68", text: "#fff" },
-  normal:   { fill: "#27ae60", text: "#fff" },
-  nodata:   { fill: "#95a5a6", text: "#fff" },
-};
-
 // Overlay state
 let overlayEnabled = true;
 // Track which SVG groups correspond to which analyte labels
@@ -654,7 +643,7 @@ window.addEventListener("message", async (evt) => {
     // User clicked exit or save&exit
     if (msg.xml) {
       drawioXml = msg.xml;
-      await fetch("/pathway.drawio", {
+      await fetch(`/api/pathways/${currentPathway}`, {
         method: "PUT",
         headers: { "Content-Type": "application/xml" },
         body: msg.xml
@@ -693,10 +682,13 @@ function openPanel(label) {
     body.appendChild(pill);
   }
 
-  if (data.datasets && data.datasets.length > 0) {
-    // Compute shared X-axis date range across all datasets
+  renderDatasets(body, data.datasets || [], label);
+}
+
+function renderDatasets(body, datasets, label) {
+  if (datasets.length > 0) {
     let globalMinDate = Infinity, globalMaxDate = -Infinity;
-    for (const ds of data.datasets) {
+    for (const ds of datasets) {
       for (const h of ds.history) {
         if (h.value == null || h.value === "?") continue;
         const t = new Date(h.date).getTime();
@@ -706,7 +698,7 @@ function openPanel(label) {
     }
     const sharedDateRange = { min: globalMinDate, max: globalMaxDate };
 
-    for (const ds of data.datasets) {
+    for (const ds of datasets) {
       const sec = document.createElement("div");
 
       const dsTitle = document.createElement("div");
@@ -721,7 +713,6 @@ function openPanel(label) {
         sec.appendChild(analyteName);
       }
 
-      // Show mapping note if present
       if (ds.note) {
         const noteDiv = document.createElement("div");
         noteDiv.className = "note-box";
@@ -748,12 +739,19 @@ function openPanel(label) {
         const tr = document.createElement("tr");
         if (i === 0) tr.className = "latest";
         const dotCls = statusDot(row.status);
-        tr.innerHTML = `
-          <td>${row.date}</td>
-          <td class="val">${row.value}</td>
-          <td style="color:#888">${ds.unit}</td>
-          <td class="status-cell"><span class="status-dot ${dotCls}"></span>${row.status}</td>
-        `;
+        tr.appendChild(Object.assign(document.createElement("td"), { textContent: row.date }));
+        const valTd = Object.assign(document.createElement("td"), { textContent: row.value, className: "val" });
+        tr.appendChild(valTd);
+        const unitTd = Object.assign(document.createElement("td"), { textContent: ds.unit });
+        unitTd.style.color = "#888";
+        tr.appendChild(unitTd);
+        const statusTd = document.createElement("td");
+        statusTd.className = "status-cell";
+        const dot = document.createElement("span");
+        dot.className = `status-dot ${dotCls}`;
+        statusTd.appendChild(dot);
+        statusTd.appendChild(document.createTextNode(row.status));
+        tr.appendChild(statusTd);
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
@@ -1151,64 +1149,7 @@ function openPanelDirect(name, datasets) {
     }
   }
 
-  // Shared X range
-  let globalMinDate = Infinity, globalMaxDate = -Infinity;
-  for (const ds of (datasets || [])) {
-    for (const h of ds.history) {
-      if (h.value == null || h.value === "?") continue;
-      const t = new Date(h.date).getTime();
-      if (t < globalMinDate) globalMinDate = t;
-      if (t > globalMaxDate) globalMaxDate = t;
-    }
-  }
-  const sharedDateRange = { min: globalMinDate, max: globalMaxDate };
-
-  for (const ds of (datasets || [])) {
-    const sec = document.createElement("div");
-
-    const dsTitle = document.createElement("div");
-    dsTitle.style.cssText = "font-size:12px;font-weight:700;color:#555;margin-bottom:2px;margin-top:12px;text-transform:uppercase;letter-spacing:0.04em;";
-    dsTitle.textContent = ds.label;
-    sec.appendChild(dsTitle);
-
-    if (ds.note) {
-      const noteDiv = document.createElement("div");
-      noteDiv.className = "note-box";
-      noteDiv.style.cssText = "font-size:11px;color:#888;font-style:italic;margin-bottom:8px;padding:6px 8px;";
-      noteDiv.textContent = ds.note;
-      sec.appendChild(noteDiv);
-    }
-
-    const validHistory = ds.history.filter(h => h.value !== null && h.value !== "?");
-    if (validHistory.length > 0) {
-      const sparkDiv = document.createElement("div");
-      sparkDiv.className = "chart-area";
-      sparkDiv.style.height = "140px";
-      sparkDiv.appendChild(renderSparkline(ds, sharedDateRange));
-      sec.appendChild(sparkDiv);
-    }
-
-    const table = document.createElement("table");
-    table.className = "history-table";
-    table.innerHTML = `<thead><tr><th>Date</th><th>Value</th><th>Unit</th><th>Status</th></tr></thead>`;
-    const tbody = document.createElement("tbody");
-    const sorted = [...ds.history].sort((a, b) => b.date.localeCompare(a.date));
-    sorted.forEach((row, i) => {
-      const tr = document.createElement("tr");
-      if (i === 0) tr.className = "latest";
-      const dotCls = statusDot(row.status);
-      tr.innerHTML = `
-        <td>${row.date}</td>
-        <td class="val">${row.value}</td>
-        <td style="color:#888">${ds.unit}</td>
-        <td class="status-cell"><span class="status-dot ${dotCls}"></span>${row.status}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    sec.appendChild(table);
-    body.appendChild(sec);
-  }
+  renderDatasets(body, datasets || [], name);
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────

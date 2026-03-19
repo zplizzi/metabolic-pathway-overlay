@@ -368,7 +368,7 @@ def parse_theriome(path):
         for row in csv.DictReader(f):
             name = row["Analyte"].strip()
             result[name] = {
-                "date": "2026-02-02",
+                "date": "2026-02-02",  # Theriome CSV is single-timepoint; no date column
                 "value": _safe_float(row["Value"]),
                 "refLow": _safe_float(row["Low"]),
                 "refHigh": _safe_float(row["High"]),

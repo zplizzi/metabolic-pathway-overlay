@@ -775,19 +775,6 @@ function drawRectNode(svg, id, node, ps) {
   svg.appendChild(g);
 }
 
-function drawBadge(g, node, badge) {
-  const bs = BADGE_STYLES[badge.type] || BADGE_STYLES.ok;
-  const bw = badge.text.length * 6.5 + 10;
-  const bh = 18;
-  const bx = node.x + (node.w - bw) / 2;
-  const by = node.y - bh / 2 - 1;
-  g.appendChild(svgEl("rect", { x: bx, y: by, width: bw, height: bh, rx: 4, fill: bs.fill }));
-  g.appendChild(svgEl("text", {
-    x: bx + bw / 2, y: by + 12,
-    "text-anchor": "middle", fill: bs.text, "font-size": 10, "font-weight": 700
-  }, badge.text));
-}
-
 // ─── EDGE DRAWING ─────────────────────────────────────────────────────────────
 
 function rotatePoint(px, py, cx, cy, angleDeg) {
@@ -1116,28 +1103,6 @@ function pathPointAtFraction(pts, frac) {
     accum += segLens[i];
   }
   return { x: pts[pts.length-1].x, y: pts[pts.length-1].y };
-}
-
-function pathMidpoint(pts) {
-  let totalLen = 0;
-  const segLens = [];
-  for (let i = 1; i < pts.length; i++) {
-    const sl = Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
-    segLens.push(sl);
-    totalLen += sl;
-  }
-  let target = totalLen / 2, accum = 0;
-  for (let i = 0; i < segLens.length; i++) {
-    if (accum + segLens[i] >= target) {
-      const t = segLens[i] > 0 ? (target - accum) / segLens[i] : 0;
-      return {
-        x: pts[i].x + (pts[i+1].x - pts[i].x) * t,
-        y: pts[i].y + (pts[i+1].y - pts[i].y) * t
-      };
-    }
-    accum += segLens[i];
-  }
-  return { x: (pts[0].x + pts[pts.length-1].x) / 2, y: (pts[0].y + pts[pts.length-1].y) / 2 };
 }
 
 function buildCurvedPath(pts) {

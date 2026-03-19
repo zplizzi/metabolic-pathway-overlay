@@ -68,6 +68,5 @@ GET  /api/share             Download self-contained HTML viewer
 Screenshots the custom HTML renderer and the diagrams.net viewer side-by-side for visual comparison (useful in agent loops).
 
 ```
-uv run python src/metabolic_pathway_overlay/compare.py [pathway_name]
-# Outputs: screenshots/<name>_html.png, screenshots/<name>_drawio.png
+uv run python src/scripts/compare.py [pathway_name]
 ```
