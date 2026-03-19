@@ -36,7 +36,7 @@ src/metabolic_pathway_overlay/  Project code
 
 ## Third-party content
 
-The `full_figure_1.drawio` pathway diagram is derived from [Figure 1](https://bornfree.life/learn/#figure1) by Joshua Leisk and is subject to its own copyright. It is not covered by this project's MIT license.
+The `full_figure_1.drawio` pathway diagram is derived from [Figure 1](https://bornfree.life/learn/#figure1) by Joshua Leisk and is subject to its own copyright. It is not covered by this project's license.
 
 ## Test data format
 
