@@ -24,6 +24,11 @@ async def index():
     return await send_file(Path(__file__).parent / "index.html")
 
 
+@app.route("/drawio-renderer.js")
+async def renderer_js():
+    return await send_file(Path(__file__).parent / "drawio-renderer.js")
+
+
 @app.route("/api/pathways")
 async def list_pathways():
     """List available pathway names."""
@@ -62,6 +67,13 @@ async def analyte_data():
 async def share():
     """Generate a self-contained HTML file with all data embedded."""
     page = (Path(__file__).parent / "index.html").read_text()
+
+    # Inline the external renderer JS for self-contained output
+    renderer_js = (Path(__file__).parent / "drawio-renderer.js").read_text()
+    page = page.replace(
+        '<script src="drawio-renderer.js"></script>',
+        f'<script>\n{renderer_js}\n</script>'
+    )
 
     # Collect all pathway XML
     pathways = {}

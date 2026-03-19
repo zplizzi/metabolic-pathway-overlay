@@ -246,16 +246,22 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "pillow" },
-    { name = "playwright" },
     { name = "quart" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "playwright" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "pillow" },
-    { name = "playwright" },
     { name = "quart" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "playwright" }]
 
 [[package]]
 name = "pillow"

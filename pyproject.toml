@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "pillow",
-    "playwright",
     "quart",
+]
+
+[dependency-groups]
+dev = [
+    "playwright",
 ]
