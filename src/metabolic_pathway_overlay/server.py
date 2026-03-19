@@ -1,3 +1,6 @@
+import html as html_mod
+import json
+import re
 from pathlib import Path
 
 from quart import Quart, send_file, request, jsonify, abort
@@ -7,11 +10,10 @@ from analyte_mapping import build_analyte_data, build_all_analytes
 app = Quart(__name__)
 
 
-
 def pathway_path(name: str) -> Path:
     """Resolve a pathway name to its .drawio file, rejecting path traversal."""
     safe = Path(name).name  # strip any directory components
-    p = PATHWAYS_DIR / f"{safe}.drawio"
+    p = app.config["pathways_dir"] / f"{safe}.drawio"
     if not p.exists():
         return None
     return p
@@ -25,7 +27,7 @@ async def index():
 @app.route("/api/pathways")
 async def list_pathways():
     """List available pathway names."""
-    names = sorted(p.stem for p in PATHWAYS_DIR.glob("*.drawio"))
+    names = sorted(p.stem for p in app.config["pathways_dir"].glob("*.drawio"))
     return jsonify(names)
 
 
@@ -43,7 +45,7 @@ async def save_pathway(name: str):
     if not p:
         # Allow creating new pathways
         safe = Path(name).name
-        p = PATHWAYS_DIR / f"{safe}.drawio"
+        p = app.config["pathways_dir"] / f"{safe}.drawio"
     data = await request.get_data(as_text=True)
     p.write_text(data)
     return jsonify({"ok": True})
@@ -52,28 +54,24 @@ async def save_pathway(name: str):
 @app.route("/api/analyte-data")
 async def analyte_data():
     """Return pre-processed analyte data mapped to pathway node labels."""
-    data = build_analyte_data()
+    data = build_analyte_data(app.config["test_data_dir"])
     return jsonify(data)
 
 
 @app.route("/api/share")
 async def share():
     """Generate a self-contained HTML file with all data embedded."""
-    import json
-    import re
-
-    html = (Path(__file__).parent / "index.html").read_text()
+    page = (Path(__file__).parent / "index.html").read_text()
 
     # Collect all pathway XML
     pathways = {}
-    for p in sorted(PATHWAYS_DIR.glob("*.drawio")):
+    for p in sorted(app.config["pathways_dir"].glob("*.drawio")):
         pathways[p.stem] = p.read_text()
 
-    analyte = build_analyte_data()
+    analyte = build_analyte_data(app.config["test_data_dir"])
 
     # Replace the async data loading with embedded data.
-    # 1. Replace loadAnalyteData() body
-    html = re.sub(
+    page = re.sub(
         r'async function loadAnalyteData\(\) \{.*?\n\}',
         'async function loadAnalyteData() {\n'
         '  const data = EMBEDDED_ANALYTE_DATA;\n'
@@ -81,11 +79,10 @@ async def share():
         '  delete data._aliases;\n'
         '  ANALYTE_DATA = data;\n'
         '}',
-        html, flags=re.DOTALL
+        page, flags=re.DOTALL
     )
 
-    # 2. Replace initPathways to use embedded pathway data
-    html = re.sub(
+    page = re.sub(
         r'async function initPathways\(\) \{.*?\n\}',
         'async function initPathways() {\n'
         '  const names = Object.keys(EMBEDDED_PATHWAYS).sort();\n'
@@ -101,11 +98,10 @@ async def share():
         '  if (initial && names.includes(initial)) select.value = initial;\n'
         '  await switchPathway(select.value);\n'
         '}',
-        html, flags=re.DOTALL
+        page, flags=re.DOTALL
     )
 
-    # 3. Replace switchPathway to use embedded data
-    html = re.sub(
+    page = re.sub(
         r'async function switchPathway\(name\) \{.*?\n\}',
         'async function switchPathway(name) {\n'
         '  const isNewPathway = currentPathway && currentPathway !== name;\n'
@@ -116,31 +112,30 @@ async def share():
         '  if (isNewPathway) sessionStorage.removeItem("pv_view");\n'
         '  resetView();\n'
         '}',
-        html, flags=re.DOTALL
+        page, flags=re.DOTALL
     )
 
-    # 4. Remove the editor button and editor container
-    html = html.replace(
+    # Remove the editor button and editor container
+    page = page.replace(
         '<button class="edit-btn" id="edit-btn" onclick="toggleEditor()">Edit Diagram</button>',
         ''
     )
-    html = html.replace(
+    page = page.replace(
         '<!-- Editor (draw.io iframe) -->\n  <div id="editor-container"></div>',
         ''
     )
 
-    # 5. Inject embedded data right after <script>
+    # Inject embedded data right after <script>
     embedded_js = (
         f'\nconst EMBEDDED_PATHWAYS = {json.dumps(pathways)};\n'
         f'const EMBEDDED_ANALYTE_DATA = {json.dumps(analyte)};\n'
     )
-    html = html.replace('<script>\n', '<script>\n' + embedded_js, 1)
+    page = page.replace('<script>\n', '<script>\n' + embedded_js, 1)
 
-    # 6. Add share button note
-    html = html.replace('<title>Pathway Viewer</title>',
+    page = page.replace('<title>Pathway Viewer</title>',
                         '<title>Pathway Viewer (Shared)</title>')
 
-    return html, 200, {
+    return page, 200, {
         "Content-Type": "text/html",
         "Content-Disposition": "attachment; filename=pathway_viewer.html"
     }
@@ -149,15 +144,13 @@ async def share():
 @app.route("/api/all-analytes")
 async def all_analytes():
     """Return all analytes from all sources, grouped by source."""
-    data = build_all_analytes()
+    data = build_all_analytes(app.config["test_data_dir"])
     return jsonify(data)
 
 
 @app.route("/drawio-viewer")
 async def drawio_viewer():
     """Render a .drawio file using the diagrams.net viewer for comparison."""
-    import json, html as html_mod
-
     name = request.args.get("pathway", "b3_nad")
     p = pathway_path(name)
     if not p:
@@ -175,15 +168,17 @@ async def drawio_viewer():
 </body></html>"""
     return page, 200, {"Content-Type": "text/html"}
 
-PATHWAYS_DIR = Path("data/pathways")
-TEST_DATA_DIR = "data/test_data"
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="Serve the pathway editor/viewer")
     parser.add_argument("--port", default=5555, type=int, help="Port to serve on")
-    parser.add_argument("--test_data_dir", default=TEST_DATA_DIR, type=str, help="path to test data folder")
+    parser.add_argument("--pathways_dir", default="data/pathways", type=str, help="path to pathways folder")
+    parser.add_argument("--test_data_dir", default="data/test_data", type=str, help="path to test data folder")
     args = parser.parse_args()
+
+    app.config["pathways_dir"] = Path(args.pathways_dir)
+    app.config["test_data_dir"] = Path(args.test_data_dir)
 
     app.run(host="127.0.0.1", port=args.port, use_reloader=True)

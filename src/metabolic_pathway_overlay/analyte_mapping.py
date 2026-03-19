@@ -44,11 +44,10 @@ VIBRANT NUTRIENT ZOOMER — exact forms measured (from Nutrient-Zoomer-Markers-L
 """
 
 import csv
-import io
+import math
 import re
 from pathlib import Path
 
-CLEANED_DATA_DIR = Path(__file__).resolve() / "test_data"
 
 # ── Mapping table ────────────────────────────────────────────────────────────
 # Maps normalized diagram node label → list of (csv_source, analyte_key, note)
@@ -232,123 +231,84 @@ LABEL_TO_ANALYTES = {
 # parenthesized abbreviation are auto-generated as aliases.
 
 _ALIAS_GROUPS = {
-    # Amino acids / metabolites with parenthesized abbreviations
-    "Nicotinic Acid": ["NA", "Niacin", "Nicotinic Acid (NA)"],
+    # Abbreviations and common name variants
+    "Nicotinic Acid": ["NA", "Niacin", "Nicotinic Acid (NA)", "Vitamin B3", "Vitamin B3 (ng/mL)"],
     "Nicotinamide":   ["NAM", "Niacinamide", "Nicotinamide (NAM)"],
-    "Quinolinate":    ["QA", "Quinolinic acid", "Quinolinate (QA)"],
-    "Methylmalonate": ["Methylmalonic acid", "MMA"],
+    "Quinolinate":    ["QA", "Quinolinic acid", "Quinolinic", "Quinolinate (QA)"],
+    "Methylmalonate": ["Methylmalonic acid", "Methylmalonic", "MMA", "MMA (Methylmalonic acid)", "Methylmalonic acid (nmol/L)"],
 
     # Krebs cycle
     "α-Ketoglutarate": ["alpha-Ketoglutarate", "a-Ketoglutarate", "2-Oxoglutarate"],
     "α-KG":            ["a-KG"],
-    "Succinate":       ["Succinate / Succinyl-CoA"],
+    "Succinate":       ["Succinate / Succinyl-CoA", "Succinic Acid", "Succinic"],
+    "Citrate":         ["Citric acid", "Citric"],
+    "D-Isocitrate":    ["Isocitric acid"],
+    "Isocitrate":      ["Isocitric acid"],
+    "cis-Aconitate":   ["cis-Aconitic acid", "Aconitic"],
+    "Fumarate":        ["Fumaric acid", "Fumaric"],
+    "Malate":          ["Malic acid", "Malic"],
+    "Oxalate":         ["Oxalic acid", "Oxalic"],
+    "Glycolate":       ["Glycolic acid", "Glycolic"],
+    "Malonate":        ["Malonic acid", "Malonic"],
+    "Lactate":         ["Lactic"],
+    "Pyruvate":        ["Pyruvic"],
+    "Pyroglutamate":   ["Pyroglutamic acid", "Pyroglutamic"],
 
     # B vitamins / cofactors
-    "P5P":        ["Pyridoxal 5-Phosphate", "PLP", "Pyridoxal 5'-Phosphate"],
-    "CoQ10":      ["Coenzyme Q10", "Coenzyme Q₁₀"],
-    "GSH":        ["Reduced Glutathione", "Glutathione (GSH)"],
-    "Ascorbate":  ["Ascorbic acid"],
-    "Hippurate":  ["Hippuric acid", "Hippuric"],
-    "HPHPA":      ["HPHPA"],
-    "4-Cresol":   ["4-Cresol"],
-    "Arabinose":  ["Arabinose"],
-    "Orotate":    ["Orotic acid", "Orotic"],
-    "N-Acetylcysteine": ["N-Acetylcysteine (NAC)"],
-    "Kynurenic Acid": ["Kynurenic acid"],
-    "beta-Alanine": ["β-Alanine", "b-Alanine"],
-
-    # Amino acids — CSV name variants
-    "Arginine":    ["L-Arginine"],
-    "Asparagine":  ["L-Asparagine"],
-    "Aspartate":   ["L-Aspartic acid"],
-    "Cysteine":    ["L-Cysteine"],
-    "Cystine":     ["L-Cystine"],
-    "Glutamate":   ["L-Glutamic acid"],
-    "Glutamine":   ["L-Glutamine"],
-    "Histidine":   ["L-Histidine"],
-    "Isoleucine":  ["L-Isoleucine"],
-    "Leucine":     ["L-Leucine"],
-    "Methionine":  ["L-Methionine"],
-    "Phenylalanine": ["L-Phenylalanine"],
-    "Proline":     ["L-Proline"],
-    "Serine":      ["L-Serine"],
-    "Threonine":   ["L-Threonine"],
-    "Tryptophan":  ["L-Tryptophan"],
-    "Tyrosine":    ["L-Tyrosine"],
-    "Valine":      ["L-Valine"],
-    "GABA":        ["gamma-Aminobutyric acid"],
-    "Cystathionine": ["L-Cystathionine"],
-
-    # Krebs cycle / organic acid CSV name variants
-    "Citrate":       ["Citric acid", "Citric"],
-    "D-Isocitrate":  ["Isocitric acid"],
-    "Isocitrate":    ["Isocitric acid"],
-    "cis-Aconitate": ["cis-Aconitic acid", "Aconitic"],
-    "Succinate":     ["Succinic Acid", "Succinic"],
-    "Fumarate":      ["Fumaric acid", "Fumaric"],
-    "Malate":        ["Malic acid", "Malic"],
-    "Oxalate":       ["Oxalic acid", "Oxalic"],
-    "Glycolate":     ["Glycolic acid", "Glycolic"],
-    "Malonate":      ["Malonic acid", "Malonic"],
-    "Lactate":       ["Lactic"],
-    "Pyruvate":      ["Pyruvic"],
-    "Pyroglutamate": ["Pyroglutamic acid", "Pyroglutamic"],
-
-    # Neurotransmitter metabolite CSV name variants
-    "HVA":   ["Homovanillic (HVA)"],
-    "VMA":   ["Vanillylmandelic (VMA)"],
-    "DOPAC": ["Dihydroxyphenylacetic (DOPAC)"],
-    "5-HIAA": ["5-Hydroxyindoleacetic (5-HIAA)"],
-    "Kynurenic Acid": ["Kynurenic"],
-    "Quinolinate":    ["Quinolinic acid", "Quinolinic", "Quinolinate (QA)"],
-    "Histamine":      ["Histamine, Plasma (ng/mL)"],
-    "Serotonin":      ["Serotonin, Serum (ng/mL)"],
-    "Homocysteine":   ["Homocysteine (umol/L)"],
-    "Methylmalonate":  ["Methylmalonic acid", "Methylmalonic", "MMA", "MMA (Methylmalonic acid)", "Methylmalonic acid (nmol/L)"],
-
-    # Vitamin CSV name variants (CMA, Vibrant, LabCorp all use different names)
-    "Nicotinic Acid": ["NA", "Niacin", "Nicotinic Acid (NA)", "Vitamin B3", "Vitamin B3 (ng/mL)"],
     "P5P":           ["Pyridoxal 5-Phosphate", "PLP", "Pyridoxal 5'-Phosphate", "Vitamin B6", "Vitamin B6, plasma (ng/mL)"],
+    "CoQ10":         ["Coenzyme Q10", "Coenzyme Q₁₀", "CoQ 10 (ug/mL)"],
+    "GSH":           ["Reduced Glutathione", "Glutathione (GSH)"],
+    "Ascorbate":     ["Ascorbic acid", "Ascorbic", "Vitamin C", "Vitamin C (mg/dL)"],
     "Riboflavin":    ["Vitamin B2", "Vitamin B2 (nmol/L)"],
     "Thiamine":      ["Vitamin B1"],
     "Cobalamin":     ["Vitamin B12", "Vitamin B12 Level (pg/mL)"],
     "Folate":        ["Folate (Vitamin B9)", "Vitamin B9", "Vitamin B9 (folate) (ng/mL)"],
     "Pantothenate":  ["Pantothenic Acid", "Pantothenic (B5)", "Vitamin B5", "Vitamin B5 (ng/mL)"],
-    "Ascorbate":     ["Ascorbic acid", "Ascorbic", "Vitamin C", "Vitamin C (mg/dL)"],
-    "CoQ10":         ["Coenzyme Q10", "Coenzyme Q₁₀", "CoQ 10 (ug/mL)"],
+    "Hippurate":     ["Hippuric acid", "Hippuric"],
+    "Orotate":       ["Orotic acid", "Orotic"],
+    "N-Acetylcysteine": ["N-Acetylcysteine (NAC)"],
+    "Kynurenic Acid": ["Kynurenic acid", "Kynurenic"],
     "Inositol":      ["myo-Inositol"],
+
+    # Amino acids — CSV name variants
+    "Arginine":      ["L-Arginine"],
+    "Asparagine":    ["L-Asparagine"],
+    "Aspartate":     ["L-Aspartic acid"],
+    "Cysteine":      ["L-Cysteine"],
+    "Cystine":       ["L-Cystine"],
+    "Glutamate":     ["L-Glutamic acid"],
+    "Glutamine":     ["L-Glutamine"],
+    "Histidine":     ["L-Histidine"],
+    "Isoleucine":    ["L-Isoleucine"],
+    "Leucine":       ["L-Leucine"],
+    "Methionine":    ["L-Methionine"],
+    "Phenylalanine": ["L-Phenylalanine"],
+    "Proline":       ["L-Proline"],
+    "Serine":        ["L-Serine"],
+    "Threonine":     ["L-Threonine"],
+    "Tryptophan":    ["L-Tryptophan"],
+    "Tyrosine":      ["L-Tyrosine"],
+    "Valine":        ["L-Valine"],
+    "GABA":          ["gamma-Aminobutyric acid"],
+    "Cystathionine": ["L-Cystathionine"],
+    "beta-Alanine":  ["β-Alanine", "b-Alanine"],
+    "Hydroxyproline": ["4-Hydroxyproline"],
+
+    # Neurotransmitter metabolites
+    "HVA":           ["Homovanillic (HVA)"],
+    "VMA":           ["Vanillylmandelic (VMA)"],
+    "DOPAC":         ["Dihydroxyphenylacetic (DOPAC)"],
+    "5-HIAA":        ["5-Hydroxyindoleacetic (5-HIAA)"],
+    "Histamine":     ["Histamine, Plasma (ng/mL)"],
+    "Serotonin":     ["Serotonin, Serum (ng/mL)"],
+    "Homocysteine":  ["Homocysteine (umol/L)"],
+
+    # Vitamins — lab-specific name variants
     "Vitamin A":     ["vitamin A, serum (labcorp) (ug/dL)", "vitamin A, retinol (quest) (ug/dL)"],
     "Vitamin D":     ["Vitamin D 25-OH", "Vitamin D 25 Hydroxy (ng/mL)"],
     "Vitamin E":     ["Vitamin E, ALPHA TOCOPHEROL (mg/dL)", "Delta Tocotrienol", "alpha-Tocopherol"],
-    "Vitamin K1":    ["Vitamin K1"],
-    "Vitamin K2":    ["Vitamin K2"],
-    "Carnitine":     ["Carnitine"],
-    "Choline":       ["Choline"],
-    "Glutathione":   ["Glutathione"],
-    "Taurine":       ["Taurine"],
-    "Ornithine":     ["Ornithine"],
-    "Citrulline":    ["Citrulline"],
-    "Uracil":        ["Uracil"],
-    "Thymine":       ["Thymine"],
-    "Uridine":       ["Uridine"],
-    "Adenosine":     ["Adenosine"],
-    "Ethanolamine":  ["Ethanolamine"],
-    "Putrescine":    ["Putrescine"],
-    "Spermidine":    ["Spermidine"],
-    "Spermine":      ["Spermine"],
-    "Mannitol":      ["Mannitol"],
-    "Sarcosine":     ["Sarcosine"],
-    "L-Dopa":        ["L-Dopa"],
-    "Tyramine":      ["Tyramine"],
-    "Tryptamine":    ["Tryptamine"],
-    "Hypotaurine":   ["Hypotaurine"],
     "Linoleic acid": ["LA (Linoleic acid)"],
     "α-Linolenic acid": ["alpha-Linolenic acid"],
-    "Pyridoxamine":  ["Pyridoxamine"],
-    "Pyridoxine":    ["Pyridoxine"],
-    "beta-Alanine":  ["β-Alanine", "b-Alanine", "beta-Alanine"],
-    "4-Hydroxyproline": ["4-Hydroxyproline"],
-    "Hydroxyproline": ["4-Hydroxyproline"],
 
     # Minerals — element names and ionic form variants
     "Fe":   ["Iron", "iron (transferrin-bound) (ug/dL)"],
@@ -535,7 +495,6 @@ def parse_cma(path):
     with open(path) as f:
         reader = csv.DictReader(f)
         headers = reader.fieldnames
-        # Date columns are the last 4 columns
         date_cols = [h for h in headers if re.match(r"\d{4}-\d{2}-\d{2}", h)]
         for row in reader:
             name = row["analyte"].strip()
@@ -559,7 +518,6 @@ def _round_sig(x, sig=3):
         return None
     if x == 0:
         return 0
-    import math
     return round(x, sig - 1 - int(math.floor(math.log10(abs(x)))))
 
 
@@ -574,16 +532,9 @@ def _compute_status(value, ref_low, ref_high):
     return "Normal"
 
 
-def _vibrant_status(entry):
-    """Compute status for a Vibrant result."""
-    if entry["current"] is None:
-        return "Unknown"
-    return _compute_status(entry["current"], entry["refLow"], entry["refHigh"])
-
-
 # ── Main builder ─────────────────────────────────────────────────────────────
 
-def build_analyte_data():
+def build_analyte_data(test_data_dir):
     """Build the complete analyte data dict for all mapped node labels.
 
     Returns: {
@@ -601,11 +552,12 @@ def build_analyte_data():
     }
     """
     # Parse all CSVs
-    theriome_path = CLEANED_DATA_DIR / "theriome_aristotle.csv"
-    oat_path = CLEANED_DATA_DIR / "mosaic_organic_acids.csv"
-    vibrant_path = CLEANED_DATA_DIR / "vibrant_micronutrients.csv"
-    cma_path = CLEANED_DATA_DIR / "css_cellular_micronutrient_assay.csv"
-    labcorp_path = CLEANED_DATA_DIR / "labcorp.csv"
+    data_dir = Path(test_data_dir)
+    theriome_path = data_dir / "theriome_aristotle.csv"
+    oat_path = data_dir / "mosaic_organic_acids.csv"
+    vibrant_path = data_dir / "vibrant_micronutrients.csv"
+    cma_path = data_dir / "css_cellular_micronutrient_assay.csv"
+    labcorp_path = data_dir / "labcorp.csv"
 
     theriome = parse_theriome(theriome_path) if theriome_path.exists() else {}
     oat = parse_oat(oat_path) if oat_path.exists() else {}
@@ -719,7 +671,7 @@ def build_analyte_data():
     return result
 
 
-def build_all_analytes():
+def build_all_analytes(test_data_dir):
     """Build a complete list of every analyte from every source, grouped by source.
 
     Returns: {
@@ -736,11 +688,12 @@ def build_all_analytes():
         ]
     }
     """
-    theriome_path = CLEANED_DATA_DIR / "theriome_aristotle.csv"
-    oat_path = CLEANED_DATA_DIR / "mosaic_organic_acids.csv"
-    vibrant_path = CLEANED_DATA_DIR / "vibrant_micronutrients.csv"
-    cma_path = CLEANED_DATA_DIR / "css_cellular_micronutrient_assay.csv"
-    labcorp_path = CLEANED_DATA_DIR / "labcorp.csv"
+    data_dir = Path(test_data_dir)
+    theriome_path = data_dir / "theriome_aristotle.csv"
+    oat_path = data_dir / "mosaic_organic_acids.csv"
+    vibrant_path = data_dir / "vibrant_micronutrients.csv"
+    cma_path = data_dir / "css_cellular_micronutrient_assay.csv"
+    labcorp_path = data_dir / "labcorp.csv"
 
     sources = []
 
