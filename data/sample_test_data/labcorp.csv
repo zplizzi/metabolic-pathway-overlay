@@ -1,0 +1,864 @@
+date,test_name,description,normal_low,normal_high,value
+2016-09-13,WBC (10 * 3/uL),,3.6,10.4,6.2
+2017-08-24,WBC (10 * 3/uL),,3.6,10.4,6.2
+2021-01-19,WBC (10 * 3/uL),,3.6,10.4,4.5
+2022-03-21,WBC (10 * 3/uL),,3.6,10.4,5.6
+2022-06-29,WBC (10 * 3/uL),,3.6,10.4,4.9
+2022-10-20,WBC (10 * 3/uL),,3.6,10.4,5.4
+2022-11-09,WBC (10 * 3/uL),,3.6,10.4,6.6
+2023-05-04,WBC (10 * 3/uL),,3.6,10.4,4.8
+2023-06-29,WBC (10 * 3/uL),,3.6,10.4,4.6
+2023-08-24,WBC (10 * 3/uL),,3.6,10.4,4.2
+2023-10-16,WBC (10 * 3/uL),,3.6,10.4,4.6
+2023-11-10,WBC (10 * 3/uL),,3.6,10.4,4.0
+2024-05-16,WBC (10 * 3/uL),,3.6,10.4,3.9
+2024-08-23,WBC (10 * 3/uL),,3.6,10.4,4.7
+2025-01-14,WBC (10 * 3/uL),,3.6,10.4,6.9
+2025-03-20,WBC (10 * 3/uL),,3.6,10.4,5.0
+2025-08-14,WBC (10 * 3/uL),,3.6,10.4,5.0
+2016-09-13,RBC (10*6/uL),,4.16,5.83,5.32
+2017-08-24,RBC (10*6/uL),,4.16,5.83,5.41
+2021-01-19,RBC (10*6/uL),,4.16,5.83,5.4
+2022-03-21,RBC (10*6/uL),,4.16,5.83,4.37
+2022-06-29,RBC (10*6/uL),,4.16,5.83,5.06
+2022-10-20,RBC (10*6/uL),,4.16,5.83,4.92
+2022-11-09,RBC (10*6/uL),,4.16,5.83,4.95
+2023-06-29,RBC (10*6/uL),,4.16,5.83,5.27
+2023-08-24,RBC (10*6/uL),,4.16,5.83,4.75
+2023-10-16,RBC (10*6/uL),,4.16,5.83,3.73
+2023-11-10,RBC (10*6/uL),,4.16,5.83,3.95
+2024-05-16,RBC (10*6/uL),,4.16,5.83,5.15
+2024-08-23,RBC (10*6/uL),,4.16,5.83,5.3
+2025-01-14,RBC (10*6/uL),,4.16,5.83,5.18
+2025-03-20,RBC (10*6/uL),,4.16,5.83,4.81
+2025-08-14,RBC (10*6/uL),,4.16,5.83,4.9
+2016-09-13,Hemoglobin (g/dL),,13.0,17.4,15.2
+2017-08-24,Hemoglobin (g/dL),,13.0,17.4,15.8
+2021-01-19,Hemoglobin (g/dL),,13.0,17.4,15.7
+2022-03-21,Hemoglobin (g/dL),,13.0,17.4,16.5
+2022-06-29,Hemoglobin (g/dL),,13.0,17.4,15.1
+2022-10-20,Hemoglobin (g/dL),,13.0,17.4,14.9
+2022-11-09,Hemoglobin (g/dL),,13.0,17.4,15.2
+2023-05-04,Hemoglobin (g/dL),,13.0,17.4,16.1
+2023-06-29,Hemoglobin (g/dL),,13.0,17.4,15.7
+2023-08-24,Hemoglobin (g/dL),,13.0,17.4,14.0
+2023-10-16,Hemoglobin (g/dL),,13.0,17.4,11.3
+2023-11-10,Hemoglobin (g/dL),,13.0,17.4,12.7
+2024-05-16,Hemoglobin (g/dL),,13.0,17.4,15.1
+2024-08-23,Hemoglobin (g/dL),,13.0,17.4,15.5
+2025-01-14,Hemoglobin (g/dL),,13.0,17.4,15.4
+2025-03-20,Hemoglobin (g/dL),,13.0,17.4,14.8
+2025-08-14,Hemoglobin (g/dL),,13.0,17.4,15.1
+2016-09-13,Hematocrit (%),,37.5,52.0,46.0
+2017-08-24,Hematocrit (%),,37.5,52.0,46.0
+2021-01-19,Hematocrit (%),,37.5,52.0,46.0
+2022-03-21,Hematocrit (%),,37.5,52.0,46.8
+2022-06-29,Hematocrit (%),,37.5,52.0,43.3
+2022-10-20,Hematocrit (%),,37.5,52.0,43.4
+2022-11-09,Hematocrit (%),,37.5,52.0,43.1
+2023-06-29,Hematocrit (%),,37.5,52.0,44.2
+2023-08-24,Hematocrit (%),,37.5,52.0,40.5
+2023-10-16,Hematocrit (%),,37.5,52.0,32.9
+2023-11-10,Hematocrit (%),,37.5,52.0,38.2
+2024-05-16,Hematocrit (%),,37.5,52.0,45.3
+2024-08-23,Hematocrit (%),,37.5,52.0,46.1
+2025-01-14,Hematocrit (%),,37.5,52.0,45.2
+2025-03-20,Hematocrit (%),,37.5,52.0,43.1
+2025-08-14,Hematocrit (%),,37.5,52.0,45.2
+2016-09-13,MCV (fL),,82.0,99.0,86.0
+2017-08-24,MCV (fL),,82.0,99.0,85.0
+2021-01-19,MCV (fL),,82.0,99.0,85.2
+2022-03-21,MCV (fL),,82.0,99.0,87.0
+2022-06-29,MCV (fL),,82.0,99.0,86.0
+2022-10-20,MCV (fL),,82.0,99.0,88.0
+2022-11-09,MCV (fL),,82.0,99.0,87.0
+2023-06-29,MCV (fL),,82.0,99.0,84.0
+2023-08-24,MCV (fL),,82.0,99.0,85.0
+2023-10-16,MCV (fL),,82.0,99.0,88.0
+2023-11-10,MCV (fL),,82.0,99.0,97.0
+2024-05-16,MCV (fL),,82.0,99.0,88.0
+2024-08-23,MCV (fL),,82.0,99.0,87.0
+2025-01-14,MCV (fL),,82.0,99.0,87.3
+2025-03-20,MCV (fL),,82.0,99.0,90.0
+2025-08-14,MCV (fL),,82.0,99.0,92.0
+2016-09-13,MCH,,27.0,34.0,29.0
+2017-08-24,MCH,,27.0,34.0,29.0
+2021-01-19,MCH,,27.0,34.0,29.1
+2022-03-21,MCH,,27.0,34.0,30.7
+2022-06-29,MCH,,27.0,34.0,29.9
+2022-10-20,MCH,,27.0,34.0,30.3
+2022-11-09,MCH,,27.0,34.0,30.7
+2023-06-29,MCH,,27.0,34.0,29.8
+2023-08-24,MCH,,27.0,34.0,29.5
+2023-10-16,MCH,,27.0,34.0,30.3
+2023-11-10,MCH,,27.0,34.0,32.2
+2024-05-16,MCH,,27.0,34.0,29.3
+2024-08-23,MCH,,27.0,34.0,29.2
+2025-01-14,MCH,,27.0,34.0,29.7
+2025-03-20,MCH,,27.0,34.0,30.8
+2025-08-14,MCH,,27.0,34.0,30.8
+2016-09-13,MCHC (g/dL),,32.0,35.0,33.0
+2017-08-24,MCHC (g/dL),,32.0,35.0,34.0
+2021-01-19,MCHC (g/dL),,32.0,35.0,34.1
+2022-03-21,MCHC (g/dL),,32.0,35.0,35.3
+2022-06-29,MCHC (g/dL),,32.0,35.0,34.9
+2022-10-20,MCHC (g/dL),,32.0,35.0,34.3
+2022-11-09,MCHC (g/dL),,32.0,35.0,35.3
+2023-06-29,MCHC (g/dL),,32.0,35.0,35.5
+2023-08-24,MCHC (g/dL),,32.0,35.0,34.6
+2023-10-16,MCHC (g/dL),,32.0,35.0,34.3
+2023-11-10,MCHC (g/dL),,32.0,35.0,33.2
+2024-05-16,MCHC (g/dL),,32.0,35.0,33.3
+2024-08-23,MCHC (g/dL),,32.0,35.0,33.6
+2025-01-14,MCHC (g/dL),,32.0,35.0,34.1
+2025-03-20,MCHC (g/dL),,32.0,35.0,34.3
+2025-08-14,MCHC (g/dL),,32.0,35.0,33.4
+2016-09-13,RDW (%),,12.2,16.3,13.1
+2017-08-24,RDW (%),,12.2,16.3,13.2
+2021-01-19,RDW (%),,12.2,16.3,12.3
+2022-03-21,RDW (%),,12.2,16.3,12.5
+2022-06-29,RDW (%),,12.2,16.3,12.7
+2022-10-20,RDW (%),,12.2,16.3,12.2
+2022-11-09,RDW (%),,12.2,16.3,12.4
+2023-06-29,RDW (%),,12.2,16.3,12.6
+2023-08-24,RDW (%),,12.2,16.3,13.1
+2023-10-16,RDW (%),,12.2,16.3,12.9
+2023-11-10,RDW (%),,12.2,16.3,12.9
+2024-05-16,RDW (%),,12.2,16.3,12.1
+2024-08-23,RDW (%),,12.2,16.3,13.2
+2025-01-14,RDW (%),,12.2,16.3,12.7
+2025-03-20,RDW (%),,12.2,16.3,13.0
+2025-08-14,RDW (%),,12.2,16.3,13.1
+2016-09-13,Platelet (10*3/uL),,143.0,328.0,184.0
+2017-08-24,Platelet (10*3/uL),,143.0,328.0,189.0
+2021-01-19,Platelet (10*3/uL),,143.0,328.0,209.0
+2022-03-21,Platelet (10*3/uL),,143.0,328.0,232.0
+2022-06-29,Platelet (10*3/uL),,143.0,328.0,194.0
+2022-10-20,Platelet (10*3/uL),,143.0,328.0,226.0
+2022-11-09,Platelet (10*3/uL),,143.0,328.0,211.0
+2023-06-29,Platelet (10*3/uL),,143.0,328.0,199.0
+2023-08-24,Platelet (10*3/uL),,143.0,328.0,207.0
+2023-10-16,Platelet (10*3/uL),,143.0,328.0,201.0
+2023-11-10,Platelet (10*3/uL),,143.0,328.0,199.0
+2024-05-16,Platelet (10*3/uL),,143.0,328.0,191.0
+2024-08-23,Platelet (10*3/uL),,143.0,328.0,241.0
+2025-01-14,Platelet (10*3/uL),,143.0,328.0,208.0
+2025-03-20,Platelet (10*3/uL),,143.0,328.0,212.0
+2025-08-14,Platelet (10*3/uL),,143.0,328.0,234.0
+2016-09-13,MPV (fL),mean platelet volume,7.5,12.5,7.6
+2017-08-24,MPV (fL),mean platelet volume,7.5,12.5,7.4
+2021-01-19,MPV (fL),mean platelet volume,7.5,12.5,9.4
+2024-08-23,MPV (fL),mean platelet volume,7.5,12.5,10.2
+2025-01-14,MPV (fL),mean platelet volume,7.5,12.5,9.5
+2023-10-16,Methemoglobin (%),,0.4,1.5,0.2
+2016-09-13,Granulocytes (%),a grouping of WBC,50.0,81.0,60.0
+2017-08-24,Granulocytes (%),a grouping of WBC,50.0,81.0,55.3
+2016-09-13,Lymphocytes (%),a WBC,25.0,40.0,36.3
+2017-08-24,Lymphocytes (%),a WBC,25.0,40.0,40.9
+2021-01-19,Lymphocytes (%),a WBC,25.0,40.0,38.3
+2022-03-21,Lymphocytes (%),a WBC,25.0,40.0,30.0
+2022-06-29,Lymphocytes (%),a WBC,25.0,40.0,40.0
+2022-10-20,Lymphocytes (%),a WBC,25.0,40.0,40.0
+2022-11-09,Lymphocytes (%),a WBC,25.0,40.0,33.0
+2023-05-04,Lymphocytes (%),a WBC,25.0,40.0,40.0
+2024-05-16,Lymphocytes (%),a WBC,25.0,40.0,32.0
+2024-08-23,Lymphocytes (%),a WBC,25.0,40.0,37.7
+2025-03-20,Lymphocytes (%),a WBC,25.0,40.0,38.0
+2025-08-14,Lymphocytes (%),a WBC,25.0,40.0,36.0
+2016-09-13,Mid (%),all the other WBCs,2.0,10.0,3.7
+2017-08-24,Mid (%),all the other WBCs,2.0,10.0,3.8
+2022-03-21,Neutrophils (%),a granulocyte,,,60.0
+2022-06-29,Neutrophils (%),a granulocyte,,,45.0
+2022-10-20,Neutrophils (%),a granulocyte,,,47.0
+2022-11-09,Neutrophils (%),a granulocyte,,,58.0
+2024-05-16,Neutrophils (%),a granulocyte,,,56.0
+2024-08-23,Neutrophils (%),a granulocyte,,,52.7
+2025-03-20,Neutrophils (%),a granulocyte,,,52.0
+2025-08-14,Neutrophils (%),a granulocyte,,,54.0
+2022-03-21,Monocytes (%),"a ""mid""",,,6.0
+2022-06-29,Monocytes (%),"a ""mid""",,,7.0
+2022-10-20,Monocytes (%),"a ""mid""",,,7.0
+2022-11-09,Monocytes (%),"a ""mid""",,,5.0
+2024-05-16,Monocytes (%),"a ""mid""",,,8.0
+2024-08-23,Monocytes (%),"a ""mid""",,,7.5
+2025-03-20,Monocytes (%),"a ""mid""",,,7.0
+2025-08-14,Monocytes (%),"a ""mid""",,,7.0
+2022-03-21,Eosinophils (%),a granulocyte,,,3.0
+2022-06-29,Eosinophils (%),a granulocyte,,,7.0
+2022-10-20,Eosinophils (%),a granulocyte,,,5.0
+2022-11-09,Eosinophils (%),a granulocyte,,,3.0
+2024-05-16,Eosinophils (%),a granulocyte,,,3.0
+2024-08-23,Eosinophils (%),a granulocyte,,,2.1
+2025-03-20,Eosinophils (%),a granulocyte,,,2.0
+2025-08-14,Eosinophils (%),a granulocyte,,,2.0
+2022-03-21,Basophils (%),a granulocyte,,,1.0
+2022-06-29,Basophils (%),a granulocyte,,,1.0
+2022-10-20,Basophils (%),a granulocyte,,,1.0
+2022-11-09,Basophils (%),a granulocyte,,,1.0
+2024-05-16,Basophils (%),a granulocyte,,,1.0
+2024-08-23,Basophils (%),a granulocyte,,,0.6
+2025-03-20,Basophils (%),a granulocyte,,,1.0
+2025-08-14,Basophils (%),a granulocyte,,,1.0
+2022-03-21,immature granulocytes (%),,,,0.0
+2022-06-29,immature granulocytes (%),,,,0.0
+2022-10-20,immature granulocytes (%),,,,0.0
+2022-11-09,immature granulocytes (%),,,,0.0
+2024-05-16,immature granulocytes (%),,,,0.0
+2025-03-20,immature granulocytes (%),,,,0.0
+2016-09-13,Absolute Grans (10*3/uL),,1.5,8.4,3.7
+2017-08-24,Absolute Grans (10*3/uL),,1.5,8.4,3.4
+2016-09-13,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.3
+2017-08-24,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.5
+2021-01-19,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.7
+2022-03-21,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.7
+2022-06-29,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.9
+2022-10-20,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.1
+2022-11-09,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.2
+2023-05-04,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.9
+2023-06-29,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.3
+2023-08-24,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.8
+2023-10-16,Absolute Lymphocytes (10*3/uL),,1.0,4.5,2.1
+2023-11-10,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.7
+2024-05-16,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.3
+2024-08-23,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.7
+2025-03-20,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.9
+2025-08-14,Absolute Lymphocytes (10*3/uL),,1.0,4.5,1.8
+2016-09-13,Absolute Mid (10*3/uL),,0.0,1.0,0.2
+2017-08-24,Absolute Mid (10*3/uL),,0.0,1.0,0.2
+2022-03-21,Neutrophils (10*3/uL),,1.5,7.8,3.4
+2022-06-29,Neutrophils (10*3/uL),,1.5,7.8,2.2
+2022-10-20,Neutrophils (10*3/uL),,1.5,7.8,2.6
+2022-11-09,Neutrophils (10*3/uL),,1.5,7.8,3.9
+2023-06-29,Neutrophils (10*3/uL),,1.5,7.8,1.7
+2023-08-24,Neutrophils (10*3/uL),,1.5,7.8,1.4
+2023-10-16,Neutrophils (10*3/uL),,1.5,7.8,1.9
+2023-11-10,Neutrophils (10*3/uL),,1.5,7.8,1.7
+2024-05-16,Neutrophils (10*3/uL),,1.5,7.8,2.2
+2024-08-23,Neutrophils (10*3/uL),,1.5,7.8,2.48
+2025-03-20,Neutrophils (10*3/uL),,1.5,7.8,2.6
+2025-08-14,Neutrophils (10*3/uL),,1.5,7.8,2.7
+2022-03-21,Monocytes (10*3/uL),,0.2,0.95,0.3
+2022-06-29,Monocytes (10*3/uL),,0.2,0.95,0.4
+2022-10-20,Monocytes (10*3/uL),,0.2,0.95,0.4
+2022-11-09,Monocytes (10*3/uL),,0.2,0.95,0.3
+2023-06-29,Monocytes (10*3/uL),,0.2,0.95,0.4
+2023-08-24,Monocytes (10*3/uL),,0.2,0.95,0.3
+2023-10-16,Monocytes (10*3/uL),,0.2,0.95,0.4
+2023-11-10,Monocytes (10*3/uL),,0.2,0.95,0.3
+2024-05-16,Monocytes (10*3/uL),,0.2,0.95,0.3
+2024-08-23,Monocytes (10*3/uL),,0.2,0.95,0.35
+2025-03-20,Monocytes (10*3/uL),,0.2,0.95,0.4
+2025-08-14,Monocytes (10*3/uL),,0.2,0.95,0.4
+2022-03-21,Eosinophils (10*3/uL),,0.015,0.5,0.2
+2022-06-29,Eosinophils (10*3/uL),,0.015,0.5,0.3
+2022-10-20,Eosinophils (10*3/uL),,0.015,0.5,0.3
+2022-11-09,Eosinophils (10*3/uL),,0.015,0.5,0.2
+2023-06-29,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2023-08-24,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2023-10-16,Eosinophils (10*3/uL),,0.015,0.5,0.2
+2023-11-10,Eosinophils (10*3/uL),,0.015,0.5,0.2
+2024-05-16,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2024-08-23,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2025-03-20,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2025-08-14,Eosinophils (10*3/uL),,0.015,0.5,0.1
+2022-03-21,Basophils (10*3/uL),,0.0,0.2,0.0
+2022-06-29,Basophils (10*3/uL),,0.0,0.2,0.0
+2022-10-20,Basophils (10*3/uL),,0.0,0.2,0.1
+2022-11-09,Basophils (10*3/uL),,0.0,0.2,0.1
+2023-06-29,Basophils (10*3/uL),,0.0,0.2,0.0
+2023-08-24,Basophils (10*3/uL),,0.0,0.2,0.0
+2023-10-16,Basophils (10*3/uL),,0.0,0.2,0.0
+2023-11-10,Basophils (10*3/uL),,0.0,0.2,0.0
+2024-05-16,Basophils (10*3/uL),,0.0,0.2,0.0
+2024-08-23,Basophils (10*3/uL),,0.0,0.2,0.028
+2025-03-20,Basophils (10*3/uL),,0.0,0.2,0.0
+2025-08-14,Basophils (10*3/uL),,0.0,0.2,0.0
+2022-03-21,immature granulocytes (10*3/uL),,,,0.0
+2022-06-29,immature granulocytes (10*3/uL),,,,0.0
+2022-10-20,immature granulocytes (10*3/uL),,,,0.0
+2022-11-09,immature granulocytes (10*3/uL),,,,0.0
+2023-06-29,immature granulocytes (10*3/uL),,,,0.0
+2023-08-24,immature granulocytes (10*3/uL),,,,0.0
+2023-10-16,immature granulocytes (10*3/uL),,,,0.0
+2023-11-10,immature granulocytes (10*3/uL),,,,0.0
+2024-05-16,immature granulocytes (10*3/uL),,,,0.0
+2025-03-20,immature granulocytes (10*3/uL),,,,0.0
+2025-08-14,immature granulocytes (10*3/uL),,,,0.0
+2023-05-04,% CD8-/CD57+ Lymphs,,2.0,17.0,17.1
+2023-05-04,Abs.CD8-CD57+ Lymphs,,60.0,360.0,325.0
+2024-08-23,all lympocyte abs (cells/uL),,850.0,3900.0,1781.0
+2024-08-23,CD3+ (mature T) %,,57.0,85.0,61.0
+2024-08-23,CD3+ (mature T) abs (cells/uL),,840.0,3060.0,1086.0
+2024-08-23,CD4+ (T helper) %,,30.0,61.0,33.0
+2024-08-23,CD4+ (T helper) abs (cells/uL),,490.0,1740.0,587.0
+2024-08-23,CD8+ (T killer) %,,12.0,42.0,24.0
+2024-08-23,CD8+ (T killer) abs (cells/uL),,180.0,1170.0,432.0
+2024-08-23,CD4/CD8 ratio,,0.86,5.0,1.36
+2024-08-23,CD16+CD56+ (NK) %,,4.0,25.0,27.0
+2024-08-23,CD16+CD56+ (NK) abs (cells/uL),,70.0,760.0,476.0
+2024-08-23,CD19+ (B cell) %,,6.0,29.0,11.0
+2024-08-23,CD19+ (B cell) abs (cells/uL),,110.0,660.0,189.0
+2016-09-13,Urine Specific Gravity,,1.001,1.03,1.025
+2017-08-24,Urine Specific Gravity,,1.001,1.03,1.02
+2016-09-13,Urine pH,,5.0,9.0,7.5
+2017-08-24,Urine pH,,5.0,9.0,6.0
+2016-09-13,Urobilinogen (mg/dL),,0.1,1.0,0.2
+2017-08-24,Urobilinogen (mg/dL),,0.1,1.0,0.2
+2016-09-13,Glucose Level (mg/dL),,74.0,118.0,89.0
+2017-08-24,Glucose Level (mg/dL),,74.0,118.0,88.0
+2021-01-19,Glucose Level (mg/dL),,74.0,118.0,85.0
+2021-12-16,Glucose Level (mg/dL),,74.0,118.0,82.0
+2022-03-21,Glucose Level (mg/dL),,74.0,118.0,74.0
+2022-06-29,Glucose Level (mg/dL),,74.0,118.0,60.0
+2022-10-20,Glucose Level (mg/dL),,74.0,118.0,70.0
+2022-11-09,Glucose Level (mg/dL),,74.0,118.0,84.0
+2023-01-18,Glucose Level (mg/dL),,74.0,118.0,69.0
+2023-06-29,Glucose Level (mg/dL),,74.0,118.0,92.0
+2023-08-24,Glucose Level (mg/dL),,74.0,118.0,83.0
+2023-10-16,Glucose Level (mg/dL),,74.0,118.0,94.0
+2023-11-10,Glucose Level (mg/dL),,74.0,118.0,86.0
+2024-05-16,Glucose Level (mg/dL),,74.0,118.0,80.0
+2024-10-04,Glucose Level (mg/dL),,74.0,118.0,90.0
+2024-11-26,Glucose Level (mg/dL),,74.0,118.0,98.0
+2025-01-14,Glucose Level (mg/dL),,74.0,118.0,99.0
+2025-03-20,Glucose Level (mg/dL),,74.0,118.0,61.0
+2025-05-27,Glucose Level (mg/dL),,74.0,118.0,92.0
+2025-08-14,Glucose Level (mg/dL),,74.0,118.0,86.0
+2025-12-23,Glucose Level (mg/dL),,74.0,118.0,86.0
+2016-09-13,BUN (mg/dL),,7.0,25.0,15.0
+2017-08-24,BUN (mg/dL),,7.0,25.0,18.0
+2021-01-19,BUN (mg/dL),,7.0,25.0,19.0
+2021-12-16,BUN (mg/dL),,7.0,25.0,16.0
+2022-03-21,BUN (mg/dL),,7.0,25.0,22.0
+2022-06-29,BUN (mg/dL),,7.0,25.0,18.0
+2022-10-20,BUN (mg/dL),,7.0,25.0,15.0
+2023-01-18,BUN (mg/dL),,7.0,25.0,19.0
+2023-06-29,BUN (mg/dL),,7.0,25.0,15.0
+2023-08-24,BUN (mg/dL),,7.0,25.0,11.0
+2023-10-16,BUN (mg/dL),,7.0,25.0,11.0
+2023-11-10,BUN (mg/dL),,7.0,25.0,11.0
+2024-05-16,BUN (mg/dL),,7.0,25.0,14.0
+2024-10-04,BUN (mg/dL),,7.0,25.0,22.0
+2024-11-26,BUN (mg/dL),,7.0,25.0,18.0
+2025-01-14,BUN (mg/dL),,7.0,25.0,18.0
+2025-03-20,BUN (mg/dL),,7.0,25.0,12.0
+2025-05-27,BUN (mg/dL),,7.0,25.0,14.0
+2025-08-14,BUN (mg/dL),,7.0,25.0,17.0
+2025-12-23,BUN (mg/dL),,7.0,25.0,17.0
+2026-02-02,BUN (mg/dL),,7.0,25.0,18.0
+2016-09-13,Creatinine (mg/dL),,0.67,1.17,0.8
+2017-08-24,Creatinine (mg/dL),,0.67,1.17,0.87
+2021-01-19,Creatinine (mg/dL),,0.67,1.17,0.84
+2021-12-16,Creatinine (mg/dL),,0.67,1.17,1.11
+2022-03-21,Creatinine (mg/dL),,0.67,1.17,1.09
+2022-06-29,Creatinine (mg/dL),,0.67,1.17,0.99
+2022-10-20,Creatinine (mg/dL),,0.67,1.17,1.1
+2022-11-09,Creatinine (mg/dL),,0.67,1.17,1.19
+2023-01-18,Creatinine (mg/dL),,0.67,1.17,1.01
+2023-06-29,Creatinine (mg/dL),,0.67,1.17,0.93
+2023-08-24,Creatinine (mg/dL),,0.67,1.17,0.81
+2023-10-16,Creatinine (mg/dL),,0.67,1.17,0.79
+2023-11-10,Creatinine (mg/dL),,0.67,1.17,0.79
+2024-05-16,Creatinine (mg/dL),,0.67,1.17,0.76
+2024-10-04,Creatinine (mg/dL),,0.67,1.17,0.83
+2024-11-26,Creatinine (mg/dL),,0.67,1.17,0.81
+2025-01-14,Creatinine (mg/dL),,0.67,1.17,0.81
+2025-03-20,Creatinine (mg/dL),,0.67,1.17,0.89
+2025-05-27,Creatinine (mg/dL),,0.67,1.17,0.94
+2025-08-14,Creatinine (mg/dL),,0.67,1.17,0.92
+2025-12-23,Creatinine (mg/dL),,0.67,1.17,1.08
+2026-02-02,Creatinine (mg/dL),,0.67,1.17,0.83
+2021-01-19,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,122.0
+2021-12-16,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,91.0
+2022-03-21,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,96.0
+2022-06-29,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,108.0
+2022-10-20,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,95.0
+2022-11-09,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,86.0
+2023-01-18,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,105.0
+2023-06-29,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,115.0
+2023-08-24,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,124.0
+2023-10-16,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,125.0
+2023-11-10,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,124.0
+2024-05-16,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,126.0
+2024-10-04,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,122.0
+2024-11-26,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,122.0
+2025-01-14,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,122.0
+2025-03-20,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,119.0
+2025-05-27,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,113.0
+2025-08-14,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,115.0
+2025-12-23,Estimated GFR (mL/min/1.73_m2),,100.0,130.0,95.0
+2016-09-13,BUN/creatinine ratio,,9.0,20.0,18.75
+2017-08-24,BUN/creatinine ratio,,9.0,20.0,20.68965517
+2021-01-19,BUN/creatinine ratio,,9.0,20.0,22.61904762
+2021-12-16,BUN/creatinine ratio,,9.0,20.0,14.41441441
+2022-03-21,BUN/creatinine ratio,,9.0,20.0,20.18348624
+2022-06-29,BUN/creatinine ratio,,9.0,20.0,18.18181818
+2022-10-20,BUN/creatinine ratio,,9.0,20.0,13.63636364
+2022-11-09,BUN/creatinine ratio,,9.0,20.0,0
+2023-01-18,BUN/creatinine ratio,,9.0,20.0,18.81188119
+2023-06-29,BUN/creatinine ratio,,9.0,20.0,16.12903226
+2023-08-24,BUN/creatinine ratio,,9.0,20.0,13.58024691
+2023-10-16,BUN/creatinine ratio,,9.0,20.0,13.92405063
+2023-11-10,BUN/creatinine ratio,,9.0,20.0,13.92405063
+2024-05-16,BUN/creatinine ratio,,9.0,20.0,18.42105263
+2024-10-04,BUN/creatinine ratio,,9.0,20.0,26.5060241
+2024-11-26,BUN/creatinine ratio,,9.0,20.0,22.22222222
+2025-01-14,BUN/creatinine ratio,,9.0,20.0,22.22222222
+2025-03-20,BUN/creatinine ratio,,9.0,20.0,13.48314607
+2025-05-27,BUN/creatinine ratio,,9.0,20.0,14.89361702
+2025-08-14,BUN/creatinine ratio,,9.0,20.0,18.47826087
+2025-12-23,BUN/creatinine ratio,,9.0,20.0,16.0
+2026-02-02,BUN/creatinine ratio,,9.0,20.0,22.0
+2016-09-13,Sodium Level (mmol/L),,134.0,143.0,140.0
+2017-08-24,Sodium Level (mmol/L),,134.0,143.0,140.0
+2021-01-19,Sodium Level (mmol/L),,134.0,143.0,138.0
+2021-12-16,Sodium Level (mmol/L),,134.0,143.0,141.0
+2022-03-21,Sodium Level (mmol/L),,134.0,143.0,141.0
+2022-06-29,Sodium Level (mmol/L),,134.0,143.0,140.0
+2022-10-20,Sodium Level (mmol/L),,134.0,143.0,142.0
+2022-11-09,Sodium Level (mmol/L),,134.0,143.0,140.0
+2023-01-18,Sodium Level (mmol/L),,134.0,143.0,142.0
+2023-06-29,Sodium Level (mmol/L),,134.0,143.0,139.0
+2023-08-24,Sodium Level (mmol/L),,134.0,143.0,139.0
+2023-10-16,Sodium Level (mmol/L),,134.0,143.0,129.0
+2023-11-10,Sodium Level (mmol/L),,134.0,143.0,135.0
+2024-05-16,Sodium Level (mmol/L),,134.0,143.0,143.0
+2024-10-04,Sodium Level (mmol/L),,134.0,143.0,141.0
+2024-11-26,Sodium Level (mmol/L),,134.0,143.0,143.0
+2025-01-14,Sodium Level (mmol/L),,134.0,143.0,140.0
+2025-03-20,Sodium Level (mmol/L),,134.0,143.0,142.0
+2025-05-27,Sodium Level (mmol/L),,134.0,143.0,139.0
+2025-08-14,Sodium Level (mmol/L),,134.0,143.0,141.0
+2025-12-23,Sodium Level (mmol/L),,134.0,143.0,141.0
+2016-09-13,Potassium Level (mmol/L),,3.5,5.1,4.2
+2017-08-24,Potassium Level (mmol/L),,3.5,5.1,4.1
+2021-01-19,Potassium Level (mmol/L),,3.5,5.1,3.9
+2021-12-16,Potassium Level (mmol/L),,3.5,5.1,3.8
+2022-03-21,Potassium Level (mmol/L),,3.5,5.1,4.1
+2022-06-29,Potassium Level (mmol/L),,3.5,5.1,3.9
+2022-10-20,Potassium Level (mmol/L),,3.5,5.1,3.8
+2022-11-09,Potassium Level (mmol/L),,3.5,5.1,4.2
+2023-01-18,Potassium Level (mmol/L),,3.5,5.1,3.5
+2023-06-29,Potassium Level (mmol/L),,3.5,5.1,4.3
+2023-08-24,Potassium Level (mmol/L),,3.5,5.1,4.2
+2023-10-16,Potassium Level (mmol/L),,3.5,5.1,4.1
+2023-11-10,Potassium Level (mmol/L),,3.5,5.1,4.1
+2024-05-16,Potassium Level (mmol/L),,3.5,5.1,4.5
+2024-10-04,Potassium Level (mmol/L),,3.5,5.1,4.0
+2024-11-26,Potassium Level (mmol/L),,3.5,5.1,3.8
+2025-01-14,Potassium Level (mmol/L),,3.5,5.1,4.0
+2025-03-20,Potassium Level (mmol/L),,3.5,5.1,4.2
+2025-05-27,Potassium Level (mmol/L),,3.5,5.1,3.9
+2025-08-14,Potassium Level (mmol/L),,3.5,5.1,4.1
+2025-12-23,Potassium Level (mmol/L),,3.5,5.1,4.4
+2016-09-13,Chloride Level (mmol/L),,96.0,107.0,103.0
+2017-08-24,Chloride Level (mmol/L),,96.0,107.0,101.0
+2021-01-19,Chloride Level (mmol/L),,96.0,107.0,100.0
+2021-12-16,Chloride Level (mmol/L),,96.0,107.0,100.0
+2022-03-21,Chloride Level (mmol/L),,96.0,107.0,101.0
+2022-06-29,Chloride Level (mmol/L),,96.0,107.0,100.0
+2022-10-20,Chloride Level (mmol/L),,96.0,107.0,100.0
+2022-11-09,Chloride Level (mmol/L),,96.0,107.0,99.0
+2023-01-18,Chloride Level (mmol/L),,96.0,107.0,98.0
+2023-06-29,Chloride Level (mmol/L),,96.0,107.0,100.0
+2023-08-24,Chloride Level (mmol/L),,96.0,107.0,100.0
+2023-10-16,Chloride Level (mmol/L),,96.0,107.0,93.0
+2023-11-10,Chloride Level (mmol/L),,96.0,107.0,97.0
+2024-05-16,Chloride Level (mmol/L),,96.0,107.0,102.0
+2024-10-04,Chloride Level (mmol/L),,96.0,107.0,102.0
+2024-11-26,Chloride Level (mmol/L),,96.0,107.0,104.0
+2025-01-14,Chloride Level (mmol/L),,96.0,107.0,101.0
+2025-03-20,Chloride Level (mmol/L),,96.0,107.0,101.0
+2025-05-27,Chloride Level (mmol/L),,96.0,107.0,103.0
+2025-08-14,Chloride Level (mmol/L),,96.0,107.0,101.0
+2025-12-23,Chloride Level (mmol/L),,96.0,107.0,102.0
+2016-09-13,CO2 (mmol/L),,21.0,31.0,30.0
+2017-08-24,CO2 (mmol/L),,21.0,31.0,27.0
+2021-01-19,CO2 (mmol/L),,21.0,31.0,25.0
+2021-12-16,CO2 (mmol/L),,21.0,31.0,30.0
+2022-03-21,CO2 (mmol/L),,21.0,31.0,21.0
+2022-06-29,CO2 (mmol/L),,21.0,31.0,21.0
+2022-10-20,CO2 (mmol/L),,21.0,31.0,26.0
+2022-11-09,CO2 (mmol/L),,21.0,31.0,27.0
+2023-01-18,CO2 (mmol/L),,21.0,31.0,24.0
+2023-08-24,CO2 (mmol/L),,21.0,31.0,23.0
+2023-10-16,CO2 (mmol/L),,21.0,31.0,21.0
+2023-11-10,CO2 (mmol/L),,21.0,31.0,24.0
+2024-05-16,CO2 (mmol/L),,21.0,31.0,25.0
+2024-10-04,CO2 (mmol/L),,21.0,31.0,30.0
+2024-11-26,CO2 (mmol/L),,21.0,31.0,30.0
+2025-01-14,CO2 (mmol/L),,21.0,31.0,31.0
+2025-03-20,CO2 (mmol/L),,21.0,31.0,28.0
+2025-05-27,CO2 (mmol/L),,21.0,31.0,19.0
+2025-08-14,CO2 (mmol/L),,21.0,31.0,24.0
+2025-12-23,CO2 (mmol/L),,21.0,31.0,24.0
+2017-08-24,Calcium Level (mg/dL),,8.6,10.3,10.3
+2021-01-19,Calcium Level (mg/dL),,8.6,10.3,9.6
+2021-12-16,Calcium Level (mg/dL),,8.6,10.3,9.5
+2022-03-21,Calcium Level (mg/dL),,8.6,10.3,9.7
+2022-06-29,Calcium Level (mg/dL),,8.6,10.3,9.7
+2022-10-20,Calcium Level (mg/dL),,8.6,10.3,9.5
+2022-11-09,Calcium Level (mg/dL),,8.6,10.3,10.0
+2023-01-18,Calcium Level (mg/dL),,8.6,10.3,9.9
+2023-06-29,Calcium Level (mg/dL),,8.6,10.3,9.8
+2023-08-24,Calcium Level (mg/dL),,8.6,10.3,9.8
+2023-10-16,Calcium Level (mg/dL),,8.6,10.3,9.3
+2023-11-10,Calcium Level (mg/dL),,8.6,10.3,9.2
+2024-05-16,Calcium Level (mg/dL),,8.6,10.3,9.9
+2024-08-23,Calcium Level (mg/dL),,8.6,10.3,8.9
+2024-10-04,Calcium Level (mg/dL),,8.6,10.3,9.3
+2024-11-26,Calcium Level (mg/dL),,8.6,10.3,9.2
+2025-01-14,Calcium Level (mg/dL),,8.6,10.3,9.7
+2025-03-20,Calcium Level (mg/dL),,8.6,10.3,9.7
+2025-05-27,Calcium Level (mg/dL),,8.6,10.3,9.0
+2025-08-14,Calcium Level (mg/dL),,8.6,10.3,9.3
+2025-12-23,Calcium Level (mg/dL),,8.6,10.3,9.7
+2016-09-13,Total Protein (g/dL),,6.6,8.3,8.1
+2017-08-24,Total Protein (g/dL),,6.6,8.3,8.2
+2021-01-19,Total Protein (g/dL),,6.6,8.3,7.5
+2021-12-16,Total Protein (g/dL),,6.6,8.3,7.5
+2022-03-21,Total Protein (g/dL),,6.6,8.3,8.0
+2022-06-29,Total Protein (g/dL),,6.6,8.3,7.3
+2022-10-20,Total Protein (g/dL),,6.6,8.3,7.3
+2022-11-09,Total Protein (g/dL),,6.6,8.3,7.9
+2022-12-29,Total Protein (g/dL),,6.6,8.3,7.3
+2023-01-18,Total Protein (g/dL),,6.6,8.3,7.8
+2023-06-29,Total Protein (g/dL),,6.6,8.3,7.6
+2023-08-24,Total Protein (g/dL),,6.6,8.3,7.4
+2023-10-16,Total Protein (g/dL),,6.6,8.3,6.8
+2023-11-10,Total Protein (g/dL),,6.6,8.3,7.0
+2024-05-16,Total Protein (g/dL),,6.6,8.3,7.0
+2024-10-04,Total Protein (g/dL),,6.6,8.3,7.0
+2024-11-26,Total Protein (g/dL),,6.6,8.3,7.3
+2025-01-14,Total Protein (g/dL),,6.6,8.3,7.7
+2025-03-20,Total Protein (g/dL),,6.6,8.3,7.0
+2025-05-27,Total Protein (g/dL),,6.6,8.3,7.2
+2025-08-14,Total Protein (g/dL),,6.6,8.3,7.3
+2025-12-23,Total Protein (g/dL),,6.6,8.3,7.5
+2016-09-13,Albumin Level (g/dL),,3.5,5.7,4.6
+2017-08-24,Albumin Level (g/dL),,3.5,5.7,4.7
+2021-01-19,Albumin Level (g/dL),,3.5,5.7,4.6
+2021-12-16,Albumin Level (g/dL),,3.5,5.7,4.8
+2022-03-21,Albumin Level (g/dL),,3.5,5.7,4.8
+2022-06-29,Albumin Level (g/dL),,3.5,5.7,4.7
+2022-10-20,Albumin Level (g/dL),,3.5,5.7,4.8
+2022-11-09,Albumin Level (g/dL),,3.5,5.7,4.7
+2022-12-29,Albumin Level (g/dL),,3.5,5.7,4.6
+2023-01-18,Albumin Level (g/dL),,3.5,5.7,5.2
+2023-06-29,Albumin Level (g/dL),,3.5,5.7,4.8
+2023-08-24,Albumin Level (g/dL),,3.5,5.7,4.8
+2023-10-16,Albumin Level (g/dL),,3.5,5.7,4.9
+2023-11-10,Albumin Level (g/dL),,3.5,5.7,4.7
+2024-05-16,Albumin Level (g/dL),,3.5,5.7,4.4
+2024-10-04,Albumin Level (g/dL),,3.5,5.7,4.2
+2024-11-26,Albumin Level (g/dL),,3.5,5.7,4.3
+2025-01-14,Albumin Level (g/dL),,3.5,5.7,4.6
+2025-03-20,Albumin Level (g/dL),,3.5,5.7,4.6
+2025-05-27,Albumin Level (g/dL),,3.5,5.7,4.6
+2025-08-14,Albumin Level (g/dL),,3.5,5.7,4.6
+2025-12-23,Albumin Level (g/dL),,3.5,5.7,4.7
+2022-03-21,Total Globulin (g/dL),,1.5,4.5,3.2
+2022-06-29,Total Globulin (g/dL),,1.5,4.5,2.6
+2022-10-20,Total Globulin (g/dL),,1.5,4.5,2.5
+2022-11-09,Total Globulin (g/dL),,1.5,4.5,3.2
+2023-01-18,Total Globulin (g/dL),,1.5,4.5,2.6
+2023-06-29,Total Globulin (g/dL),,1.5,4.5,2.8
+2023-08-24,Total Globulin (g/dL),,1.5,4.5,2.6
+2023-10-16,Total Globulin (g/dL),,1.5,4.5,1.9
+2023-11-10,Total Globulin (g/dL),,1.5,4.5,2.3
+2024-05-16,Total Globulin (g/dL),,1.5,4.5,2.6
+2024-10-04,Total Globulin (g/dL),,1.5,4.5,2.8
+2024-11-26,Total Globulin (g/dL),,1.5,4.5,3.0
+2025-01-14,Total Globulin (g/dL),,1.5,4.5,3.1
+2025-03-20,Total Globulin (g/dL),,1.5,4.5,2.4
+2025-05-27,Total Globulin (g/dL),,1.5,4.5,2.6
+2025-08-14,Total Globulin (g/dL),,1.5,4.5,2.7
+2025-12-23,Total Globulin (g/dL),,1.5,4.5,2.8
+2023-08-24,A/G ratio,,1.2,2.2,1.8
+2023-10-16,A/G ratio,,1.2,2.2,2.6
+2023-11-10,A/G ratio,,1.2,2.2,2.0
+2024-05-16,A/G ratio,,1.2,2.2,1.7
+2024-10-04,A/G ratio,,1.2,2.2,1.5
+2024-11-26,A/G ratio,,1.2,2.2,1.4
+2025-01-14,A/G ratio,,1.2,2.2,1.5
+2016-09-13,Total Bilirubin (mg/dL),,0.3,1.0,0.8
+2017-08-24,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2021-01-19,Total Bilirubin (mg/dL),,0.3,1.0,0.9
+2021-12-16,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2022-03-21,Total Bilirubin (mg/dL),,0.3,1.0,0.7
+2022-06-29,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2022-10-20,Total Bilirubin (mg/dL),,0.3,1.0,0.3
+2022-11-09,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2022-12-29,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2023-01-18,Total Bilirubin (mg/dL),,0.3,1.0,0.8
+2023-06-29,Total Bilirubin (mg/dL),,0.3,1.0,0.9
+2023-08-24,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2023-10-16,Total Bilirubin (mg/dL),,0.3,1.0,2.0
+2023-11-10,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2024-05-16,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2024-10-04,Total Bilirubin (mg/dL),,0.3,1.0,0.6
+2024-11-26,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2025-01-14,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2025-03-20,Total Bilirubin (mg/dL),,0.3,1.0,0.5
+2025-05-27,Total Bilirubin (mg/dL),,0.3,1.0,1.0
+2025-08-14,Total Bilirubin (mg/dL),,0.3,1.0,0.3
+2025-12-23,Total Bilirubin (mg/dL),,0.3,1.0,0.7
+2022-12-29,"Bilirubin, direct (mg/dL)",,0.0,0.4
+2016-09-13,Alkaline Phosphatase ([IU]/L),,34.0,121.0,66.0
+2017-08-24,Alkaline Phosphatase ([IU]/L),,34.0,121.0,75.0
+2021-01-19,Alkaline Phosphatase ([IU]/L),,34.0,121.0,43.0
+2021-12-16,Alkaline Phosphatase ([IU]/L),,34.0,121.0,72.0
+2022-03-21,Alkaline Phosphatase ([IU]/L),,34.0,121.0,75.0
+2022-06-29,Alkaline Phosphatase ([IU]/L),,34.0,121.0,61.0
+2022-10-20,Alkaline Phosphatase ([IU]/L),,34.0,121.0,67.0
+2022-11-09,Alkaline Phosphatase ([IU]/L),,34.0,121.0,65.0
+2022-12-29,Alkaline Phosphatase ([IU]/L),,34.0,121.0,62.0
+2023-01-18,Alkaline Phosphatase ([IU]/L),,34.0,121.0,62.0
+2023-06-29,Alkaline Phosphatase ([IU]/L),,34.0,121.0,66.0
+2023-08-24,Alkaline Phosphatase ([IU]/L),,34.0,121.0,71.0
+2023-10-16,Alkaline Phosphatase ([IU]/L),,34.0,121.0,90.0
+2023-11-10,Alkaline Phosphatase ([IU]/L),,34.0,121.0,85.0
+2024-05-16,Alkaline Phosphatase ([IU]/L),,34.0,121.0,114.0
+2024-10-04,Alkaline Phosphatase ([IU]/L),,34.0,121.0,100.0
+2024-11-26,Alkaline Phosphatase ([IU]/L),,34.0,121.0,107.0
+2025-01-14,Alkaline Phosphatase ([IU]/L),,34.0,121.0,89.0
+2025-03-20,Alkaline Phosphatase ([IU]/L),,34.0,121.0,93.0
+2025-05-27,Alkaline Phosphatase ([IU]/L),,34.0,121.0,79.0
+2025-08-14,Alkaline Phosphatase ([IU]/L),,34.0,121.0,78.0
+2025-12-23,Alkaline Phosphatase ([IU]/L),,34.0,121.0,75.0
+2016-09-13,AST ([IU]/L),,13.0,39.0,17.0
+2017-08-24,AST ([IU]/L),,13.0,39.0,22.0
+2021-01-19,AST ([IU]/L),,13.0,39.0,19.0
+2021-12-16,AST ([IU]/L),,13.0,39.0,23.0
+2022-03-21,AST ([IU]/L),,13.0,39.0,15.0
+2022-06-29,AST ([IU]/L),,13.0,39.0,16.0
+2022-10-20,AST ([IU]/L),,13.0,39.0,15.0
+2022-11-09,AST ([IU]/L),,13.0,39.0,17.0
+2022-12-29,AST ([IU]/L),,13.0,39.0,27.0
+2023-01-18,AST ([IU]/L),,13.0,39.0,24.0
+2023-06-29,AST ([IU]/L),,13.0,39.0,29.0
+2023-08-24,AST ([IU]/L),,13.0,39.0,22.0
+2023-10-16,AST ([IU]/L),,13.0,39.0,26.0
+2023-11-10,AST ([IU]/L),,13.0,39.0,22.0
+2024-05-16,AST ([IU]/L),,13.0,39.0,23.0
+2024-10-04,AST ([IU]/L),,13.0,39.0,15.0
+2024-11-26,AST ([IU]/L),,13.0,39.0,20.0
+2025-01-14,AST ([IU]/L),,13.0,39.0,20.0
+2025-03-20,AST ([IU]/L),,13.0,39.0,21.0
+2025-05-27,AST ([IU]/L),,13.0,39.0,20.0
+2025-08-14,AST ([IU]/L),,13.0,39.0,20.0
+2025-12-23,AST ([IU]/L),,13.0,39.0,22.0
+2017-08-24,ALT([IU]/L),,7.0,52.0,20.0
+2021-01-19,ALT([IU]/L),,7.0,52.0,11.0
+2021-12-16,ALT([IU]/L),,7.0,52.0,18.0
+2022-03-21,ALT([IU]/L),,7.0,52.0,5.0
+2022-06-29,ALT([IU]/L),,7.0,52.0,6.0
+2022-10-20,ALT([IU]/L),,7.0,52.0,9.0
+2022-11-09,ALT([IU]/L),,7.0,52.0,14.0
+2022-12-29,ALT([IU]/L),,7.0,52.0,18.0
+2023-01-18,ALT([IU]/L),,7.0,52.0,18.0
+2023-08-24,ALT([IU]/L),,7.0,52.0,13.0
+2023-10-16,ALT([IU]/L),,7.0,52.0,22.0
+2023-11-10,ALT([IU]/L),,7.0,52.0,14.0
+2024-05-16,ALT([IU]/L),,7.0,52.0,19.0
+2024-10-04,ALT([IU]/L),,7.0,52.0,9.0
+2024-11-26,ALT([IU]/L),,7.0,52.0,13.0
+2025-01-14,ALT([IU]/L),,7.0,52.0,13.0
+2025-03-20,ALT([IU]/L),,7.0,52.0,11.0
+2025-05-27,ALT([IU]/L),,7.0,52.0,12.0
+2025-08-14,ALT([IU]/L),,7.0,52.0,8.0
+2025-12-23,ALT([IU]/L),,7.0,52.0,10.0
+2016-09-13,Anion-Gap (mmol/L),,3.0,15.0,7.0
+2017-08-24,Anion-Gap (mmol/L),,3.0,15.0,12.0
+2016-09-13,Cholesterol (mg/dL),,,200.0,179.0
+2017-08-24,Cholesterol (mg/dL),,,200.0,196.0
+2021-01-19,Cholesterol (mg/dL),,,200.0,234.0
+2021-12-16,Cholesterol (mg/dL),,,200.0,191.0
+2022-03-21,Cholesterol (mg/dL),,,200.0,204.0
+2025-08-14,Cholesterol (mg/dL),,,200.0,147.0
+2016-09-13,Triglycerides (mg/dL),,,150.0,62.0
+2017-08-24,Triglycerides (mg/dL),,,150.0,67.0
+2021-01-19,Triglycerides (mg/dL),,,150.0,52.0
+2021-12-16,Triglycerides (mg/dL),,,150.0,81.0
+2022-03-21,Triglycerides (mg/dL),,,150.0,118.0
+2025-08-14,Triglycerides (mg/dL),,,150.0,45.0
+2021-01-19,HDL-Cholesterol (mg/dL),,60.0,,50.0
+2021-12-16,HDL-Cholesterol (mg/dL),,60.0,,56.0
+2022-03-21,HDL-Cholesterol (mg/dL),,60.0,,54.0
+2025-08-14,HDL-Cholesterol (mg/dL),,60.0,,40.0
+2021-01-19,LDL-Cholesterol (mg/dL),,,100.0,170.0
+2021-12-16,LDL-Cholesterol (mg/dL),,,100.0,119.0
+2022-03-21,LDL-Cholesterol (mg/dL),,,100.0,129.0
+2025-08-14,LDL-Cholesterol (mg/dL),,,100.0,97.0
+2021-12-16,VLDL (mg/dL),,,,16.0
+2022-03-21,VLDL (mg/dL),,,,21.0
+2016-09-13,Non HDL Chol (LDL + VLDL) (mg/dL),,,,130.0
+2017-08-24,Non HDL Chol (LDL + VLDL) (mg/dL),,,,145.0
+2021-01-19,Non HDL Chol (LDL + VLDL) (mg/dL),,,,184.0
+2022-03-21,Apolipoprotein A-1 (mg/dL),,101.0,178.0,147.0
+2022-03-21,Apolipoprotein B (mg/dL),,,90.0,101.0
+2025-08-14,LDL-P (nmol/L),,,1000.0,1099.0
+2023-01-18,HDL-P (umol/L),,30.5,,28.5
+2025-08-14,HDL-P (umol/L),,30.5,,23.4
+2023-01-18,small LDL-P (nmol/L),,,527.0,322.0
+2025-08-14,small LDL-P (nmol/L),,,527.0,408.0
+2023-01-18,Large VLDL-P (nmol/L),,,2.7,1.0
+2023-01-18,Large HDL-P (umol/L),,4.8,,7.5
+2023-01-18,VLDL Size (nm),,,46.6,47.2
+2023-01-18,LDL Size (nm),,,20.5,21.4
+2025-08-14,LDL Size (nm),,,20.5,21.2
+2023-01-18,HDL Size (nm),,9.2,,9.5
+2025-08-14,LP-IR Score (nm),,,45.0,33.0
+2025-03-20,oxidized LDL (ng/mL),,10.0,170.0,213.0
+2025-03-20,Lp-PLA2 activity (nmol/min/mL),,0.0,224.0,150.0
+2025-08-14,Hemoglobin A1c (%),,4.8,5.6,5.0
+2024-08-23,"vitamin A, retinol (quest) (ug/dL)",,38.0,98.0
+2024-11-26,"vitamin A, retinol (quest) (ug/dL)",,38.0,98.0
+2025-03-20,"vitamin A, serum (labcorp) (ug/dL)",,18.9,57.3
+2025-11-20,"vitamin A, serum (labcorp) (ug/dL)",,18.9,57.3
+2024-08-23,Vitamin B2 (nmol/L),,6.2,39.0,209.0
+2024-08-23,Vitamin B5 (ng/mL),,,275.0,54.0
+2024-08-23,"Vitamin B6, plasma (ng/mL)",,2.1,21.7
+2024-11-26,"Vitamin B6, plasma (ng/mL)",,2.1,21.7
+2024-08-23,Vitamin B9 (folate) (ng/mL),,5.4,,12.1
+2016-09-13,Vitamin B12 Level (pg/mL),,232.0,1245.0,678.0
+2021-01-19,Vitamin B12 Level (pg/mL),,232.0,1245.0,585.0
+2024-08-23,Vitamin B12 Level (pg/mL),,232.0,1245.0,554.0
+2025-05-27,Vitamin B12 Level (pg/mL),,232.0,1245.0,772.0
+2025-08-14,Vitamin B12 Level (pg/mL),,232.0,1245.0,904.0
+2024-08-23,Vitamin C (mg/dL),,0.2,2.1,1.2
+2026-02-02,Vitamin C (mg/dL),,0.2,2.1,1.9
+2016-09-13,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,26.0
+2017-08-24,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,33.0
+2021-01-19,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,40.0
+2023-01-18,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,91.9
+2023-05-04,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,71.9
+2024-08-23,Vitamin D 25 Hydroxy (ng/mL),,30.0,100.0,71.0
+2024-08-23,"Vitamin E, ALPHA TOCOPHEROL (mg/dL)",,5.7,19.9
+2022-06-29, blood (ug/L)","Copper, Serum or Plasma (ug/L)",,630.0
+2024-08-23, blood (ug/L)","Copper, Serum or Plasma (ug/L)",,630.0
+2024-11-26, blood (ug/L)","Copper, Serum or Plasma (ug/L)",,630.0
+2025-12-23, blood (ug/L)","Copper, Serum or Plasma (ug/L)",,630.0
+2025-05-27, blood (ug/L)",Ceruloplasmin (mg/L),,160.0,310.0
+2025-12-23, blood (ug/L)",Ceruloplasmin (mg/L),,160.0,310.0
+2025-12-23, blood (ug/L)",Inferred Free Copper (ug/L),,,
+2025-12-23, blood (ug/L)","Copper, Free (filtration+ICP-MS, ug/L)",
+2026-02-02, blood (ug/L)","Copper, Free (filtration+ICP-MS, ug/L)",
+2024-08-23, blood (ug/L)","magnesium, rbc (mg/dL)",,4.0
+2024-08-23, blood (ug/L)","manganese, blood (ug/L)",,4.2
+2024-08-23, blood (ug/L)","MOLYBDENUM, blood (ug/L)",,
+2024-08-23, blood (ug/L)","SELENIUM, blood (ug/L)",,120.0
+2024-08-23, blood (ug/L)","zinc, plasma (ug/dL)",,60.0
+2025-05-27, blood (ug/L)","iodine, plasma (ug/L)",,31.0
+2016-09-13, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2021-01-19, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2022-03-21, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2023-01-18, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2023-06-29, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2024-07-15, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2024-11-26, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2025-03-20, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2025-05-27, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2025-08-14, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2025-12-23, blood (ug/L)",Ferritin (ng/mL),,38.0,380.0
+2024-07-15, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2024-08-23, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2024-11-26, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2025-03-20, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2025-05-27, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2025-08-14, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2025-12-23, blood (ug/L)",iron (transferrin-bound) (ug/dL),,38.0,169.0
+2024-07-15, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2024-11-26, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2025-03-20, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2025-05-27, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2025-08-14, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2025-12-23, blood (ug/L)",iron binding capacity (mcg/dL),,250.0,425.0
+2024-07-15, blood (ug/L)",iron % saturation,,15.0,55.0
+2024-11-26, blood (ug/L)",iron % saturation,,15.0,55.0
+2025-03-20, blood (ug/L)",iron % saturation,,15.0,55.0
+2025-05-27, blood (ug/L)",iron % saturation,,15.0,55.0
+2025-08-14, blood (ug/L)",iron % saturation,,15.0,55.0
+2025-12-23, blood (ug/L)",iron % saturation,,15.0,55.0
+2025-05-27, blood (ug/L)",unsaturated iron binding capacity (mcg/dL),,111.0,343.0
+2025-08-14, blood (ug/L)",unsaturated iron binding capacity (mcg/dL),,111.0,343.0
+2025-12-23, blood (ug/L)",unsaturated iron binding capacity (mcg/dL),,111.0,343.0
+2025-08-14, blood (ug/L)",Soluble Transferrin Receptor (nmol/L),,12.2,27.3
+2021-01-19, blood (ug/L)",CRP (mg/L),,,1.0
+2021-12-16, blood (ug/L)",CRP (mg/L),,,1.0
+2023-06-29, blood (ug/L)",CRP (mg/L),,,1.0
+2025-03-20, blood (ug/L)",CRP (mg/L),,,1.0
+2023-06-29, blood (ug/L)",MMP-9,,,984.0
+2025-03-20, blood (ug/L)",MMP-9,,,984.0
+2021-12-16, blood (ug/L)",Homocysteine (umol/L),,,15.0
+2023-05-04, blood (ug/L)",Homocysteine (umol/L),,,15.0
+2024-11-26, blood (ug/L)",Homocysteine (umol/L),,,15.0
+2025-05-27, blood (ug/L)",Homocysteine (umol/L),,,15.0
+2024-08-23, blood (ug/L)",PROSTAGLANDIN F2A,,,
+2016-05-03, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2016-09-13, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2017-08-24, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2021-01-19, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2022-03-21, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2023-05-04, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2024-08-23, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2024-10-04, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2024-11-26, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2025-08-14, blood (ug/L)",TSH (uIU/mL),,0.45,4.5
+2025-08-14, blood (ug/L)",T3 (ng/dL),,71.0,180.0
+2022-03-21, blood (ug/L)","T3, free (pg/mL)",,2.3
+2023-05-04, blood (ug/L)","T3, free (pg/mL)",,2.3
+2024-08-23, blood (ug/L)","T3, free (pg/mL)",,2.3
+2024-10-04, blood (ug/L)","T3, free (pg/mL)",,2.3
+2024-11-26, blood (ug/L)","T3, free (pg/mL)",,2.3
+2025-08-14, blood (ug/L)","T3, free (pg/mL)",,2.3
+2024-08-23, blood (ug/L)","T3, reverse (ng/dL)",,8.0
+2024-10-04, blood (ug/L)","T3, reverse (ng/dL)",,8.0
+2024-11-26, blood (ug/L)","T3, reverse (ng/dL)",,8.0
+2025-08-14, blood (ug/L)","T3, reverse (ng/dL)",,8.0
+2016-05-03, blood (ug/L)",t3 uptake (%),,22.0,35.0
+2016-05-03, blood (ug/L)",T4 (ug/dL),,4.5,12.0
+2022-03-21, blood (ug/L)",T4 (ug/dL),,4.5,12.0
+2025-08-14, blood (ug/L)",T4 (ug/dL),,4.5,12.0
+2016-05-03, blood (ug/L)",free t4 index,,1.4,3.8
+2023-05-04, blood (ug/L)","free t4, direct (ng/dL)",,0.82
+2024-08-23, blood (ug/L)","free t4, direct (ng/dL)",,0.82
+2024-10-04, blood (ug/L)","free t4, direct (ng/dL)",,0.82
+2024-11-26, blood (ug/L)","free t4, direct (ng/dL)",,0.82
+2025-08-14, blood (ug/L)","free t4, direct (ng/dL)",,0.82
+2022-06-29,Tryptase (ug/L),,2.2,13.2,3.4
+2024-08-23,Tryptase (ug/L),,2.2,13.2,2.1
+2022-06-29,"Histamine, Plasma (ng/mL)",,,1.0
+2023-01-18,"Histamine, Plasma (ng/mL)",,,1.0
+2023-05-04,"Histamine, Plasma (ng/mL)",,,1.0
+2023-06-29,"Histamine, Plasma (ng/mL)",,,1.0
+2024-11-16,"Histamine (24hr urine, mg)",,0.006,0.131
+2022-06-29,"Serotonin, Serum (ng/mL)",,56.0,244.0
+2022-10-20,"Serotonin, Serum (ng/mL)",,56.0,244.0
+2024-08-23,"Serotonin, Serum (ng/mL)",,56.0,244.0
+2022-10-20,"Cortisol, total (ug/dL)",,,
+2023-01-18,"Cortisol, total (ug/dL)",,,
+2024-08-23,"Cortisol, total (ug/dL)",,,
+2024-08-23,"Cortisol, free (ug/dL)",,,
+2022-10-20, 24-hr (mcg/L)",Protein S-Functional (%),,63.0,140.0
+2022-10-20, 24-hr (mcg/L)",Protein C-Functional (%),,73.0,180.0
+2022-11-09, 24-hr (mcg/L)",Creatine Kinase (U/L),,49.0,439.0
+2023-06-29, 24-hr (mcg/L)",Creatine Kinase (U/L),,49.0,439.0
+2025-01-14, 24-hr (mcg/L)",Creatine Kinase (U/L),,49.0,439.0
+2023-05-04, 24-hr (mcg/L)",Eosinophil Cationic Protein (ug/L),,2.0,10.0
+2024-08-23, 24-hr (mcg/L)",Eosinophil Cationic Protein (ug/L),,2.0,10.0
+2022-11-09, 24-hr (mcg/L)",Angiotensin converting enzyme (U/L),,14.0,82.0
+2023-01-18, 24-hr (mcg/L)",CoQ 10 (ug/mL),,0.37,
+2024-08-23, 24-hr (mcg/L)",CoQ 10 (ug/mL),,0.37,
+2023-05-04, 24-hr (mcg/L)",G-6-PD (U/g Hb),,7.2,14.2
+2024-11-26,plasma ammonia (umol/L),,,72.0,50.0
+2025-05-27,Methylmalonic acid (nmol/L),,,378.0,119.0
+2025-08-14,F2-Isoprostane (ng/mL),,,,0.36
+2025-08-14,F2-Isoprostane/Creatinine (ng/mg Cr),,,0.86,0.33
+2025-11-20,DHEA (ng/dL),,31.0,701.0,254.0
+2025-11-20,DHEA sulfate (ug/dL),,138.0,475.0,141.0
+2021-01-19,Testosterone (total) (ng/dL),,250.0,1100.0,793.0
+2025-11-20,Testosterone (total) (ng/dL),,250.0,1100.0,651.0
+2021-01-19,Testosterone (free) (pg/mL),,35.0,155.0,100.5
+2025-11-20,Testosterone (free) (pg/mL),,35.0,155.0,143.0
+2025-11-20,Sex Hormone Binding Globulin (nmol/L),,16.5,56.0,47.4

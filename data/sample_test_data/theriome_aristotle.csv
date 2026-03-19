@@ -1,0 +1,127 @@
+Analyte,Value,Low,High,Deviation%,Status
+1-Methylhistamine,824,491,804,112.8,HIGH
+1,3-Diaminopropane,978,426,885,140.5,HIGH
+2-Aminobenzoic acid,238,131,234,107.8,HIGH
+2-Hydroxybutyric acid,12663,7189,12470,107.3,HIGH
+2-Hydroxycinnamic acid,930,732,1262,-25.3,
+3-Methyl-2-oxovaleric acid,1215,1241,1631,-113.3,LOW
+3-Methyladenine,2266,2403,3164,-136,LOW
+3,4-Dihydroxybenzeneacetic acid,30,27,80,-88.7,IR-LOW
+4-Hydroxybenzoic acid,388,347,500,-46.4,
+4-Hydroxyphenylpyruvic acid,2065,1842,2482,-30.3,
+4-Hydroxyproline,32,110,296,-183.9,LOW
+5-Aminolevulinic acid,289,110,320,70.5,IR-HIGH
+Adenine,4848,3216,6249,7.6,
+Adenosine,41821,43109,70596,-109.4,LOW
+alpha-Hydroxyisobutyric acid,29807,20052,31589,69.1,IR-HIGH
+alpha-Lactose,625,671,1200,-117.4,LOW
+alpha-Linolenic acid,554,714,1715,-132,LOW
+alpha-Tocopherol,9,11,57,-108.7,LOW
+Aminocaproic acid,4878,5167,9331,-113.9,LOW
+beta-Alanine,6991,7061,10628,-103.9,LOW
+Cadaverine,1134,1288,5009,-108.3,LOW
+Caffeine,146,185,426,-132.4,LOW
+cis-Aconitic acid,48,4,84,10,
+Citric acid,150,266,517,-192.4,LOW
+Cyclic AMP,404,397,615,-93.6,IR-LOW
+Cysteamine,403802,385484,505182,-69.4,IR-LOW
+D-Mannose,89981,90941,122501,-106.1,LOW
+D-Ribose,67,77,168,-122,LOW
+D-Ribose 5-phosphate,3682,2608,4532,11.6,
+Deoxyadenosine,572,413,571,101.3,HIGH
+Diaminopimelic acid,17,10,19,55.6,IR-HIGH
+Dihydrouracil,24895,5273,23059,120.6,HIGH
+Ethanolamine,35481,6235,33188,117,HIGH
+Ferulic acid,2056,3442,5796,-217.8,LOW
+Fructose 6-phosphate,260,165,500,-43.3,
+Fumaric acid,12191,8334,13229,57.6,IR-HIGH
+gamma-Aminobutyric acid,20,71,158,-217.2,LOW
+Glucose 6-phosphate,5346,4177,5253,117.3,HIGH
+Glutaric acid,29,23,53,-60,IR-LOW
+Glutathione,3566,4369,5997,-198.6,LOW
+Glycerol,1247,1025,1545,-14.6,
+Glycine,7070,1191,2503,796.2,HIGH
+Glycolic acid,7619,1135,2782,687.4,HIGH
+Guanosine,5,18,49,-183.9,LOW
+Histamine,8615,5426,9732,48.1,
+Homocarnosine,6394,5750,9155,-62.2,IR-LOW
+Hypotaurine,4607,4348,8942,-88.7,IR-LOW
+Hypoxanthine,2281,2290,4243,-100.9,LOW
+Ibuprofen,1654,1778,3468,-114.7,LOW
+Indoleacetic acid,2731,2726,4590,-99.5,IR-LOW
+Inosine,2243,2389,4512,-113.8,LOW
+Isocitric acid,3490,1405,2809,197,HIGH
+Ketoleucine,2144,1090,2331,69.9,IR-HIGH
+L-Alanine,2605,1765,2381,172.7,HIGH
+L-Allothreonine,149,61,136,134.7,HIGH
+L-Arabitol,28,52,92,-220,LOW
+L-Arginine,179,127,273,-28.8,
+L-Asparagine,11,14,219,-102.9,LOW
+L-Aspartic acid,13,4,13,100,IR-HIGH
+L-Cystathionine,14124,3165,14957,85.9,IR-HIGH
+L-Cystine,2239,1664,2300,80.8,IR-HIGH
+L-Cysteine,0,5245,28807,-144.5,LOW
+L-Dopa,1048,533,1134,71.4,IR-HIGH
+L-Glutamic acid,5800,6224,11507,-116.1,LOW
+L-Glutamine,5787,3574,4794,262.8,HIGH
+L-Histidine,52,26,39,300,HIGH
+L-Histidinol,5561,5581,9026,-101.2,LOW
+L-Homoserine,49,42,98,-75,IR-LOW
+L-Isoleucine,394,263,511,5.6,
+L-Leucine,1770,1965,3595,-123.9,LOW
+L-Lysine,10,10,79,-100,IR-LOW
+L-Methionine,114,103,173,-68.6,IR-LOW
+L-Norleucine,176,462,616,-471.4,LOW
+L-Phenylalanine,39816,27019,41744,73.8,IR-HIGH
+L-Proline,2038,494,4223,-17.2,
+L-Serine,1483,1601,3288,-114,LOW
+L-Threonine,2000,2147,4213,-114.2,LOW
+L-Tryptophan,203,531,2688,-130.4,LOW
+L-Tyrosine,72,261,609,-208.6,LOW
+L-Valine,15,22,40,-177.8,LOW
+Linoleic acid,651,398,513,340,HIGH
+Malic acid,278,205,287,78,IR-HIGH
+Malonic acid,247,143,264,71.9,IR-HIGH
+Maltotriose,60,33,66,63.6,IR-HIGH
+Mannitol,122,26,75,291.8,HIGH
+Methylmalonic acid,26,17,54,-51.4,IR-LOW
+myo-Inositol,20,12,24,33.3,
+N-Acetylputrescine,301,16,88,691.7,HIGH
+Niacinamide,100,19,59,305,HIGH
+Nicotinic acid,131,27,38,1790.9,HIGH
+O-Acetylserine,11,26,86,-150,LOW
+Oleic acid,19,19,58,-100,IR-LOW
+Ornithine,217,2199,3716,-361.3,LOW
+Oxalic acid,141,222,836,-126.4,LOW
+Oxoglutaric acid,1839,1840,3006,-100.2,LOW
+p-Hydroxyphenylacetic acid,8505,0,5709,198,HIGH
+Palmitic acid,2761,907,3028,74.8,IR-HIGH
+Phenylephrine,32103,19189,33060,86.2,IR-HIGH
+Phenylpyruvic acid,9,3,9,100,IR-HIGH
+Phosphoserine,4626,2748,4247,150.6,HIGH
+Protocatechuic acid,251,31,78,836.2,HIGH
+Putrescine,2321,1840,4089,-57.2,IR-LOW
+Pyridoxamine,3134,2918,5315,-82,IR-LOW
+Pyridoxine,620,143,587,114.9,HIGH
+Pyroglutamic acid,38,55,333,-112.2,LOW
+Quinolinic acid,54,159,265,-298.1,LOW
+Ribitol,4551,2795,4539,101.4,HIGH
+Sarcosine,35868,37209,57300,-113.3,LOW
+Sebacic acid,91459,100160,125082,-169.8,LOW
+Serotonin,151,155,270,-107,LOW
+Shikimic acid,29872,30127,35911,-108.8,LOW
+Spermidine,25610,28763,36270,-184,LOW
+Spermine,302,142,325,74.9,IR-HIGH
+Stearic Acid,16,6,12,233.3,HIGH
+Succinic Acid,3,9,39,-140,LOW
+Sucrose,4,12,16,-500,LOW
+Taurine,26,24,128,-96.2,IR-LOW
+Thymine,27765,25117,29483,21.3,
+trans-Cinnamic Acid,1586,889,1581,101.4,HIGH
+Trehalose,255,292,572,-126.4,LOW
+Tryptamine,1404,1109,1826,-17.7,
+Tyramine,1215,1448,1763,-247.9,LOW
+Uracil,654,418,652,101.7,HIGH
+Uridine,17,7,12,300,HIGH
+Uridine diphosphate-N-acetylglucosamine,253,125,233,137,HIGH
+Urocanic acid,82155,79995,86964,-38,

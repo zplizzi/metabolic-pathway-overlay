@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway Viewer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; }
+
+  header {
+    padding: 12px 24px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header h1 { font-size: 18px; font-weight: 600; color: #222; }
+  header .subtitle { font-size: 13px; color: #888; flex: 1; }
+
+  .pathway-select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+  }
+  .pathway-select:hover { border-color: #aaa; }
+
+  .edit-btn {
+    padding: 6px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    font-size: 13px;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.15s;
+  }
+  .edit-btn:hover { background: #f0f0f0; border-color: #aaa; }
+  .edit-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+  .layout { display: flex; height: calc(100vh - 49px); }
+
+  .diagram-pane {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    touch-action: none;
+  }
+
+  .diagram-wrap {
+    position: absolute;
+    transform-origin: 0 0;
+  }
+
+  svg#pathway { display: block; }
+
+  /* Editor iframe */
+  #editor-container {
+    display: none;
+    flex: 1;
+    position: relative;
+  }
+  #editor-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  /* Metabolite nodes */
+  .node-group { cursor: pointer; }
+  .node-group:hover .node-rect { filter: brightness(0.93); }
+  .node-rect { transition: filter 0.15s; }
+  .node-label { pointer-events: none; }
+  .node-sublabel { font-size: 11px; pointer-events: none; fill: #666; }
+
+  /* Status badge */
+  .badge { font-size: 10px; font-weight: 700; pointer-events: none; }
+  .badge-rect { rx: 4; ry: 4; }
+
+  /* Panel */
+  .detail-panel {
+    width: 400px;
+    background: white;
+    border-left: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width 0.2s;
+  }
+  .detail-panel.hidden { width: 0; border-left: none; }
+
+  .panel-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .panel-header h2 { font-size: 16px; font-weight: 600; }
+  .panel-header .panel-source { font-size: 12px; color: #888; margin-top: 2px; }
+  .panel-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+    margin-top: -2px;
+  }
+
+  .panel-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .status-high { background: #fde0de; color: #c0392b; }
+  .status-low { background: #fde0de; color: #c0392b; }
+  .status-normal { background: #e8f5e9; color: #2e7d32; }
+  .status-supp { background: #1a3a6b; color: white; }
+  .status-inferred { background: #fff3cd; color: #856404; }
+  .status-unknown { background: #f0f0f0; color: #888; }
+
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .history-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 6px 6px;
+    border-bottom: 1px solid #eee;
+  }
+  .history-table td {
+    padding: 6px 6px;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .history-table tr:last-child td { border-bottom: none; }
+  .history-table .val { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .history-table .latest td { background: #fafafa; }
+  .history-table .status-cell { font-size: 11px; }
+  .status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .dot-high { background: #e74c3c; }
+  .dot-low { background: #e74c3c; }
+  .dot-normal { background: #27ae60; }
+  .dot-unknown { background: #bbb; }
+
+  .chart-area { margin-bottom: 16px; }
+  .chart-area canvas { width: 100% !important; }
+
+  .ref-range {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .note-box {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .note-box strong { color: #333; }
+
+  .no-data {
+    text-align: center;
+    color: #aaa;
+    font-size: 13px;
+    padding: 32px 0;
+  }
+
+  .sparkline { overflow: visible; }
+
+  .edge-label { font-size: 11px; fill: #666; }
+  .edge-label-green { font-size: 11px; fill: #5DAA68; font-weight: 600; }
+  .group-label { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+
+  /* Overlay controls */
+  /* Tabs */
+  .tab-bar {
+    display: flex; gap: 0; margin-right: 16px;
+  }
+  .tab-btn {
+    padding: 5px 14px; border: 1px solid #ccc; background: white;
+    font-size: 13px; color: #555; cursor: pointer; transition: all 0.15s;
+  }
+  .tab-btn:first-child { border-radius: 6px 0 0 6px; }
+  .tab-btn:last-child { border-radius: 0 6px 6px 0; }
+  .tab-btn + .tab-btn { border-left: none; }
+  .tab-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+  /* All Data list view */
+  .all-data-pane {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 28px;
+    background: #f8f9fa;
+  }
+  .all-data-pane.visible { display: block; }
+
+  .source-group { margin-bottom: 24px; }
+  .source-group h3 {
+    font-size: 13px; font-weight: 700; color: #555; text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 8px; padding-bottom: 4px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .analyte-list {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .analyte-chip {
+    padding: 4px 10px; border-radius: 4px; font-size: 12px;
+    background: white; border: 1px solid #e0e0e0; cursor: pointer;
+    transition: all 0.1s; color: #333;
+  }
+  .analyte-chip:hover { background: #e8f0fe; border-color: #4285f4; }
+  .analyte-chip .status-dot-mini {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    margin-right: 4px; vertical-align: middle;
+  }
+
+  .overlay-toggle {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 13px; color: #555; cursor: pointer; user-select: none;
+  }
+  .overlay-toggle input { cursor: pointer; }
+  .time-select {
+    padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px;
+    background: white; font-size: 12px; color: #333; cursor: pointer;
+  }
+
+  /* Overlay glow ring around matched nodes */
+  .overlay-ring {
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  /* Legend */
+  .overlay-legend {
+    position: absolute; bottom: 12px; left: 12px;
+    background: rgba(255,255,255,0.95); border: 1px solid #ddd;
+    border-radius: 8px; padding: 8px 12px; font-size: 11px;
+    display: none; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .overlay-legend.visible { display: flex; gap: 12px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Pathway Viewer</h1>
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-pathway" onclick="switchTab('pathway')">Pathway</button>
+    <button class="tab-btn" id="tab-alldata" onclick="switchTab('alldata')">All Data</button>
+  </div>
+  <select class="pathway-select" id="pathway-select" onchange="switchPathway(this.value)"></select>
+  <span class="subtitle" id="subtitle-text">Click any metabolite to see test history</span>
+  <label class="overlay-toggle" title="Color nodes by analyte status">
+    <input type="checkbox" id="overlay-toggle" checked onchange="toggleOverlay()"> Overlay recent test data
+  </label>
+  <select class="time-select" id="time-window" onchange="updateOverlay()">
+    <option value="latest">Most Recent</option>
+    <option value="3">Last 3 months</option>
+    <option value="6" selected>Last 6 months</option>
+    <option value="12">Last 12 months</option>
+    <option value="all">All Time</option>
+  </select>
+  <button class="edit-btn" onclick="location.href='/api/share'">Share</button>
+  <button class="edit-btn" id="edit-btn" onclick="toggleEditor()">Edit Diagram</button>
+</header>
+
+<div class="layout">
+  <!-- Viewer -->
+  <div class="diagram-pane" id="viewer-container">
+    <div class="diagram-wrap">
+      <svg id="pathway" width="960" height="700" viewBox="0 0 960 700"></svg>
+    </div>
+    <div class="overlay-legend" id="overlay-legend">
+      <span style="font-size:13px;color:#888;font-weight:600">Low</span>
+      <div style="position:relative;width:300px;height:36px;">
+        <div style="width:300px;height:20px;border-radius:4px;border:1px solid rgba(0,0,0,0.12);background:linear-gradient(to right,#9C27B0,#4285F4 25%,#4CAF50 50%,#FFEB3B 75%,#F44336)"></div>
+        <div style="position:relative;width:300px;height:14px;">
+          <span style="position:absolute;left:0%;transform:translateX(-50%);font-size:10px;color:#999">0</span>
+          <span style="position:absolute;left:10%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:20%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:30%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:40%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:50%;transform:translateX(-50%);font-size:10px;color:#999">.5</span>
+          <span style="position:absolute;left:60%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:70%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:80%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:90%;transform:translateX(-50%);font-size:10px;color:#bbb">|</span>
+          <span style="position:absolute;left:100%;transform:translateX(-50%);font-size:10px;color:#999">1</span>
+        </div>
+      </div>
+      <span style="font-size:13px;color:#888;font-weight:600">High</span>
+      <span class="legend-item" style="margin-left:8px"><span class="legend-swatch" style="background:#95a5a6"></span> No data</span>
+    </div>
+  </div>
+  <!-- All Data list view -->
+  <div class="all-data-pane" id="all-data-pane"></div>
+  <!-- Editor (draw.io iframe) -->
+  <div id="editor-container"></div>
+  <!-- Detail panel -->
+  <div class="detail-panel hidden" id="detail-panel">
+    <div class="panel-header">
+      <button class="panel-close" onclick="closePanel()">×</button>
+      <h2 id="panel-title">—</h2>
+      <div class="panel-source" id="panel-source"></div>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── ANALYTE DATA (loaded from server) ────────────────────────────────────────
+
+// Dynamically populated: maps node IDs or labels to their test data
+let METABOLITES = {};
+
+// Server-provided mapping: node label → {datasets: [...]}
+let ANALYTE_DATA = {};
+let ANALYTE_ALIASES = {};
+
+const BADGE_STYLES = {
+  high:     { fill: "#c0392b", text: "#fff" },
+  low:      { fill: "#3498db", text: "#fff" },
+  supp:     { fill: "#1a3a6b", text: "#fff" },
+  inferred: { fill: "#c0392b", text: "#fff" },
+  req:      { fill: "#d6b656", text: "#7A5A00" },
+  ok:       { fill: "#5DAA68", text: "#fff" },
+  normal:   { fill: "#27ae60", text: "#fff" },
+  nodata:   { fill: "#95a5a6", text: "#fff" },
+};
+
+// Overlay state
+let overlayEnabled = true;
+// Track which SVG groups correspond to which analyte labels
+let nodeAnalyteMap = []; // [{g: SVGGElement, label: string, node: {x,y,w,h}}]
+
+async function loadAnalyteData() {
+  try {
+    const resp = await fetch("/api/analyte-data");
+    const data = await resp.json();
+    ANALYTE_ALIASES = data._aliases || {};
+    delete data._aliases;
+    ANALYTE_DATA = data;
+  } catch (e) {
+    console.warn("Failed to load analyte data:", e);
+  }
+}
+
+/** Resolve a node's plain-text label to an analyte data entry.
+ *  Tries exact match, then alias lookup, then case-insensitive match. */
+function resolveAnalyteLabel(plainText) {
+  if (!plainText) return null;
+  const label = plainText.trim();
+
+  // Try a single candidate against data + aliases (exact then case-insensitive)
+  function tryMatch(s) {
+    if (ANALYTE_DATA[s]) return s;
+    const aliased = ANALYTE_ALIASES[s];
+    if (aliased && ANALYTE_DATA[aliased]) return aliased;
+    const lower = s.toLowerCase();
+    for (const key of Object.keys(ANALYTE_DATA)) {
+      if (key.toLowerCase() === lower) return key;
+    }
+    for (const [alias, canonical] of Object.entries(ANALYTE_ALIASES)) {
+      if (alias.toLowerCase() === lower && ANALYTE_DATA[canonical]) return canonical;
+    }
+    return null;
+  }
+
+  // 1. Try full label
+  const full = tryMatch(label);
+  if (full) return full;
+
+  // 2. Handle "Full Name (ABBREV)" pattern — try both parts
+  const parenMatch = label.match(/^(.+?)\s*\(([^)]+)\)\s*$/);
+  if (parenMatch) {
+    const fromName = tryMatch(parenMatch[1].trim());
+    if (fromName) return fromName;
+    const fromAbbrev = tryMatch(parenMatch[2].trim());
+    if (fromAbbrev) return fromAbbrev;
+  }
+
+  return null;
+}
+
+// ─── Continuous color gradient for overlay ──────────────────────────────────
+// Score 0.0 = critically low → 0.5 = normal → 1.0 = critically high
+const COLOR_STOPS = [
+  { t: 0.00, r: 156, g: 39,  b: 176 },  // #9C27B0 purple
+  { t: 0.25, r: 66,  g: 133, b: 244 },  // #4285F4 blue
+  { t: 0.50, r: 76,  g: 175, b: 80  },  // #4CAF50 green
+  { t: 0.75, r: 255, g: 235, b: 59  },  // #FFEB3B yellow
+  { t: 1.00, r: 244, g: 67,  b: 54  },  // #F44336 red
+];
+const NODATA_COLOR = "#95a5a6";
+
+function scoreToColor(score) {
+  const s = Math.max(0, Math.min(1, score));
+  // Find the two stops we're between
+  for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
+    const a = COLOR_STOPS[i], b = COLOR_STOPS[i + 1];
+    if (s >= a.t && s <= b.t) {
+      const f = (s - a.t) / (b.t - a.t);
+      const r = Math.round(a.r + (b.r - a.r) * f);
+      const g = Math.round(a.g + (b.g - a.g) * f);
+      const bl = Math.round(a.b + (b.b - a.b) * f);
+      return `rgb(${r},${g},${bl})`;
+    }
+  }
+  return `rgb(${COLOR_STOPS[COLOR_STOPS.length - 1].r},${COLOR_STOPS[COLOR_STOPS.length - 1].g},${COLOR_STOPS[COLOR_STOPS.length - 1].b})`;
+}
+
+/** Compute a 0–1 score for a single value relative to its reference range.
+ *  0.0 = critically low, 0.5 = mid-normal, 1.0 = critically high.
+ *  Values within range map to [0.4, 0.6]. Values outside scale toward 0 or 1,
+ *  reaching the extreme at 1 range-width beyond the boundary. */
+function valueToScore(value, refLow, refHigh) {
+  if (value == null) return null;
+  // One-sided ranges: only upper bound
+  if (refLow == null && refHigh != null) {
+    if (value <= refHigh) return 0.5; // normal
+    const dist = (value - refHigh) / refHigh; // normalize by refHigh itself
+    return Math.min(1, 0.6 + 0.4 * Math.min(1, dist));
+  }
+  // One-sided ranges: only lower bound
+  if (refHigh == null && refLow != null) {
+    if (value >= refLow) return 0.5; // normal
+    const dist = (refLow - value) / refLow;
+    return Math.max(0, 0.4 - 0.4 * Math.min(1, dist));
+  }
+  if (refLow == null || refHigh == null) return null;
+  const range = refHigh - refLow;
+  if (range <= 0) return 0.5;
+  if (value < refLow) {
+    const dist = (refLow - value) / range;
+    return Math.max(0, 0.4 - 0.4 * Math.min(1, dist));
+  }
+  if (value > refHigh) {
+    const dist = (value - refHigh) / range;
+    return Math.min(1, 0.6 + 0.4 * Math.min(1, dist));
+  }
+  // Within range: linearly map [refLow, refHigh] → [0.4, 0.6]
+  return 0.4 + 0.2 * (value - refLow) / range;
+}
+
+/** Get the overlay score for a node label. Returns {score: 0-1, hasData: bool}.
+ *  Uses the most abnormal (furthest from 0.5) score across all datasets. */
+function getOverlayScore(label) {
+  const entry = ANALYTE_DATA[label];
+  if (!entry || !entry.datasets || entry.datasets.length === 0) return { score: null, hasData: false };
+
+  let worstScore = null;
+  let worstDist = -1;
+  let hasData = false;
+
+  for (const ds of entry.datasets) {
+    const filtered = getFilteredHistory(ds);
+    if (filtered.length === 0) continue;
+    const latest = [...filtered].sort((a, b) => b.date.localeCompare(a.date))[0];
+    if (latest.value == null) continue;
+    hasData = true;
+
+    const s = valueToScore(latest.value, ds.refLow, ds.refHigh);
+    if (s === null) continue;
+    const dist = Math.abs(s - 0.5);
+    if (dist > worstDist) {
+      worstDist = dist;
+      worstScore = s;
+    }
+  }
+
+  return { score: worstScore, hasData };
+}
+
+function getTimeCutoff() {
+  const sel = document.getElementById("time-window").value;
+  if (sel === "all") return "0000-01-01";
+  if (sel === "latest") return "2099-01-01"; // special: handled in filtering
+  const months = parseInt(sel);
+  const d = new Date();
+  d.setMonth(d.getMonth() - months);
+  return d.toISOString().slice(0, 10);
+}
+
+/** For the "latest" time window, get the single most recent entry across all datasets. */
+function getLatestEntryForDataset(ds) {
+  if (!ds.history || ds.history.length === 0) return null;
+  return [...ds.history].sort((a, b) => b.date.localeCompare(a.date))[0];
+}
+
+function getFilteredHistory(ds) {
+  const sel = document.getElementById("time-window").value;
+  if (sel === "latest") {
+    const latest = getLatestEntryForDataset(ds);
+    return latest ? [latest] : [];
+  }
+  const cutoff = getTimeCutoff();
+  return ds.history.filter(h => h.date >= cutoff);
+}
+
+// ─── PATHWAY LOADING ─────────────────────────────────────────────────────────
+
+let drawioXml = null;
+let currentPathway = null;
+
+async function initPathways() {
+  const resp = await fetch("/api/pathways");
+  const names = await resp.json();
+  const select = document.getElementById("pathway-select");
+  select.innerHTML = "";
+  for (const name of names) {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name.replace(/_/g, " ");
+    select.appendChild(opt);
+  }
+  // Load first pathway (or from URL hash)
+  const initial = location.hash.slice(1) || "full_figure_1" || names[0];
+  if (initial && names.includes(initial)) {
+    select.value = initial;
+  }
+  await switchPathway(select.value);
+}
+
+async function switchPathway(name) {
+  const isNewPathway = currentPathway && currentPathway !== name;
+  currentPathway = name;
+  location.hash = name;
+  const resp = await fetch(`/api/pathways/${name}`);
+  drawioXml = await resp.text();
+  renderFromDrawio();
+  if (isNewPathway) sessionStorage.removeItem("pv_view");
+  resetView();
+}
+
+// ─── DRAWIO PARSING ──────────────────────────────────────────────────────────
+
+function parseDrawioNodes(doc) {
+  const nodes = {};
+  const edges = [];
+
+  for (const cell of doc.querySelectorAll("mxCell")) {
+    const id = cell.getAttribute("id");
+    const geo = cell.querySelector("mxGeometry");
+    const style = cell.getAttribute("style") || "";
+    const value = cell.getAttribute("value") || "";
+    const source = cell.getAttribute("source");
+    const target = cell.getAttribute("target");
+    const parent = cell.getAttribute("parent") || "1";
+
+    if (source || target || cell.getAttribute("edge") === "1") {
+      const waypoints = [];
+      let sourcePoint = null, targetPoint = null;
+      if (geo) {
+        for (const pt of geo.querySelectorAll(":scope > mxPoint")) {
+          const as = pt.getAttribute("as");
+          const px = parseFloat(pt.getAttribute("x"));
+          const py = parseFloat(pt.getAttribute("y"));
+          if (as === "sourcePoint" && !isNaN(px) && !isNaN(py)) {
+            sourcePoint = { x: px, y: py };
+          } else if (as === "targetPoint" && !isNaN(px) && !isNaN(py)) {
+            targetPoint = { x: px, y: py };
+          } else if (as !== "offset" && !isNaN(px) && !isNaN(py)) {
+            waypoints.push({ x: px, y: py });
+          }
+        }
+        const arr = geo.querySelector("Array");
+        if (arr) {
+          for (const pt of arr.querySelectorAll("mxPoint")) {
+            const px = parseFloat(pt.getAttribute("x"));
+            const py = parseFloat(pt.getAttribute("y"));
+            if (!isNaN(px) && !isNaN(py)) waypoints.push({ x: px, y: py });
+          }
+        }
+      }
+      // Label position: x = fraction along edge (-1=source, 0=mid, 1=target), y = perpendicular offset
+      const labelX = geo ? parseFloat(geo.getAttribute("x")) : NaN;
+      const labelY = geo ? parseFloat(geo.getAttribute("y")) : NaN;
+      edges.push({ id, source, target, value, style, waypoints, sourcePoint, targetPoint, parent,
+                    labelX: isNaN(labelX) ? 0 : labelX, labelY: isNaN(labelY) ? 0 : labelY });
+    } else if (geo && geo.getAttribute("as") === "geometry" && id !== "0" && id !== "1") {
+      const x = parseFloat(geo.getAttribute("x") || 0);
+      const y = parseFloat(geo.getAttribute("y") || 0);
+      const w = parseFloat(geo.getAttribute("width") || 0);
+      const h = parseFloat(geo.getAttribute("height") || 0);
+      const relative = geo.getAttribute("relative") === "1";
+      if (w > 0 && h > 0) {
+        nodes[id] = { x, y, w, h, value, style, parent, relative };
+      }
+    }
+  }
+
+  // Resolve parent group offsets (groups position children relative to parent)
+  // Handles nested groups and group rotation
+  function resolvePos(nodeId, seen = new Set()) {
+    const n = nodes[nodeId];
+    if (!n || n._resolved || seen.has(nodeId)) return;
+    seen.add(nodeId);
+    if (n.parent && n.parent !== "0" && n.parent !== "1" && nodes[n.parent]) {
+      resolvePos(n.parent, seen);
+      const p = nodes[n.parent];
+      const pStyle = parseStyle(p.style);
+      const pRotation = parseFloat(pStyle.rotation) || 0;
+
+      // Translate from local to parent absolute.
+      // In mxGraph, group rotation does NOT transform child positions —
+      // it only affects the group's own shape rendering. Children are simply
+      // offset by the parent's (x, y). Confirmed by inspecting the draw.io
+      // viewer's DOM transforms.
+      n.x += p.x;
+      n.y += p.y;
+
+      // Track parent rotation for nodes that don't have their own rotation
+      n._parentRotation = (n._parentRotation || 0) + pRotation;
+    }
+    n._resolved = true;
+  }
+  for (const id of Object.keys(nodes)) resolvePos(id);
+
+  // Resolve edge coordinates for edges inside groups
+  // Their waypoints/sourcePoint/targetPoint are in the parent group's local space
+  for (const edge of edges) {
+    if (!edge.parent || edge.parent === "0" || edge.parent === "1") continue;
+    const parentNode = nodes[edge.parent];
+    if (!parentNode) continue;
+
+    const px = parentNode.x;
+    const py = parentNode.y;
+    const ps = parseStyle(parentNode.style);
+    const rotation = parseFloat(ps.rotation) || 0;
+
+    // Helper to transform a point from group-local to absolute coords.
+    // In mxGraph, group rotation does NOT transform child/edge positions.
+    function transformPoint(pt) {
+      if (!pt) return pt;
+      let ax = px + pt.x;
+      let ay = py + pt.y;
+      return { x: ax, y: ay };
+    }
+
+    // Transform all edge coordinates
+    for (let i = 0; i < edge.waypoints.length; i++) {
+      edge.waypoints[i] = transformPoint(edge.waypoints[i]);
+    }
+    if (edge.sourcePoint) edge.sourcePoint = transformPoint(edge.sourcePoint);
+    if (edge.targetPoint) edge.targetPoint = transformPoint(edge.targetPoint);
+  }
+
+  return { nodes, edges };
+}
+
+/** Desaturate a CSS color string by a factor (0 = grayscale, 1 = unchanged).
+ *  Works with hex (#rgb, #rrggbb), rgb(), and named colors.
+ *  Returns an rgb() string. Non-parseable values pass through unchanged. */
+function desaturateColor(color, factor) {
+  if (!color || color === "none") return color;
+  let r, g, b;
+  const hex = color.trim();
+  if (hex.startsWith("#")) {
+    const h = hex.slice(1);
+    if (h.length === 3) {
+      r = parseInt(h[0]+h[0], 16); g = parseInt(h[1]+h[1], 16); b = parseInt(h[2]+h[2], 16);
+    } else if (h.length === 6) {
+      r = parseInt(h.slice(0,2), 16); g = parseInt(h.slice(2,4), 16); b = parseInt(h.slice(4,6), 16);
+    } else return color;
+  } else {
+    const m = color.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (m) { r = +m[1]; g = +m[2]; b = +m[3]; }
+    else return color;
+  }
+  // Luminance-weighted grayscale
+  const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+  r = Math.round(gray + (r - gray) * factor);
+  g = Math.round(gray + (g - gray) * factor);
+  b = Math.round(gray + (b - gray) * factor);
+  return `rgb(${r},${g},${b})`;
+}
+
+/** If overlay is active, desaturate a color. Otherwise return as-is. */
+function dimColor(color) {
+  return overlayEnabled ? desaturateColor(color, 0.3) : color;
+}
+
+function parseStyle(styleStr) {
+  const result = {};
+  const flags = [];
+  for (const part of styleStr.split(";")) {
+    const eq = part.indexOf("=");
+    if (eq > 0) {
+      result[part.slice(0, eq)] = part.slice(eq + 1);
+    } else if (part.trim()) {
+      flags.push(part.trim());
+    }
+  }
+  result._flags = flags;
+  return result;
+}
+
+/** Strip HTML tags from a value string, preserving line breaks.
+ *  Converts <sub> and <sup> content to Unicode subscript/superscript characters
+ *  so they render correctly in SVG text elements. */
+function htmlToPlainText(html) {
+  if (!html) return "";
+
+  // Unicode maps for subscript/superscript conversion
+  const subMap = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉',
+                   '+':'₊','-':'₋','=':'₌','(':'₍',')':'₎',
+                   'a':'ₐ','e':'ₑ','h':'ₕ','i':'ᵢ','j':'ⱼ','k':'ₖ','l':'ₗ','m':'ₘ','n':'ₙ',
+                   'o':'ₒ','p':'ₚ','r':'ᵣ','s':'ₛ','t':'ₜ','u':'ᵤ','v':'ᵥ','x':'ₓ' };
+  const supMap = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹',
+                   '+':'⁺','-':'⁻','=':'⁼','(':'⁽',')':'⁾',
+                   'a':'ᵃ','b':'ᵇ','c':'ᶜ','d':'ᵈ','e':'ᵉ','f':'ᶠ','g':'ᵍ','h':'ʰ','i':'ⁱ',
+                   'j':'ʲ','k':'ᵏ','l':'ˡ','m':'ᵐ','n':'ⁿ','o':'ᵒ','p':'ᵖ','r':'ʳ','s':'ˢ',
+                   't':'ᵗ','u':'ᵘ','v':'ᵛ','w':'ʷ','x':'ˣ','y':'ʸ','z':'ᶻ' };
+
+  function toUnicode(text, map) {
+    return text.replace(/./g, ch => map[ch] || ch);
+  }
+
+  // Strip inner HTML tags from sub/sup content, then convert to Unicode
+  function convertSubSup(s, tag, map) {
+    return s.replace(new RegExp('<' + tag + '>([\\s\\S]*?)</' + tag + '>', 'gi'), (_, inner) => {
+      const plain = inner.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+      return toUnicode(plain, map);
+    });
+  }
+
+  let s = html;
+  // Remove elements with font-size:0px (invisible encoded data)
+  s = s.replace(/<[^>]+font-size:\s*0px[^>]*>.*?<\/[^>]+>/gi, "");
+  // Convert <sub>...</sub> and <sup>...</sup> to Unicode before stripping all tags
+  s = convertSubSup(s, 'sub', subMap);
+  s = convertSubSup(s, 'sup', supMap);
+  // Convert small-font-size patterns used as subscripts in draw.io:
+  // e.g. O<font style="font-size: 7px;">2</font> → O₂
+  // Only convert when the inner text is short (≤5 chars stripped) — longer text
+  // is regular content at a small font size, not a subscript indicator.
+  s = s.replace(/<font[^>]+font-size:\s*([0-9]+)px[^>]*>([\s\S]*?)<\/font>/gi, (match, size, inner) => {
+    const sz = parseInt(size);
+    const plain = inner.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+    if (sz > 0 && sz <= 9 && plain.length <= 5) {
+      return toUnicode(plain, subMap);
+    }
+    return match; // leave larger font sizes or long content alone
+  });
+
+  return s
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<div[^>]*>/gi, "\n")
+    .replace(/<\/div>/gi, "\n")
+    .replace(/<\/p>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#xa;/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .trim();
+}
+
+/** Extract the outermost inline font color from HTML value, if present.
+ *  Returns the color string (e.g. "#000000") or null. */
+function extractInlineFontColor(html) {
+  if (!html) return null;
+  // Strip invisible elements before extracting color
+  const cleaned = html.replace(/<[^>]+font-size:\s*0px[^>]*>.*?<\/[^>]+>/gi, "");
+  const m = cleaned.match(/^<font\s+color="([^"]+)">/i)
+         || cleaned.match(/^<font\s+style="[^"]*color:\s*([^;"]+)/i);
+  return m ? m[1] : null;
+}
+
+/** Extract per-line colors from HTML with inline font color tags.
+ *  Returns a Map from line-index to color string, for lines that have
+ *  an explicit inline color. Lines without explicit color get null. */
+function extractPerLineColors(html) {
+  if (!html) return {};
+  const colors = {};
+  // Strip invisible elements (font-size:0px) before extracting colors
+  const cleaned = html.replace(/<[^>]+font-size:\s*0px[^>]*>.*?<\/[^>]+>/gi, "");
+  // Split on <br>, <div>, </div>, </p> to get rough line segments
+  const segments = cleaned.split(/<br\s*\/?>|<div[^>]*>|<\/div>|<\/p>/gi);
+  let lineIdx = 0;
+  for (const seg of segments) {
+    const stripped = seg.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
+    if (!stripped) continue;
+    // Find the last font color declaration in this segment
+    // Use negative lookbehind to avoid matching background-color
+    const colorMatches = [...seg.matchAll(/(?<!-)(?<!ground-)color:\s*([^;"<]+)/gi),
+                          ...seg.matchAll(/\bcolor="([^"]+)"/gi)];
+    if (colorMatches.length > 0) {
+      colors[lineIdx] = colorMatches[colorMatches.length - 1][1].trim();
+    }
+    lineIdx++;
+  }
+  return colors;
+}
+
+/** Classify a node by its drawio style */
+function nodeType(ps) {
+  const flags = ps._flags || [];
+  if (flags.includes("group")) return "group";
+  if (flags.includes("ellipse")) return "ellipse";
+  if (flags.includes("text")) {
+    // text nodes with a visible strokeColor are styled rectangles, not plain text.
+    // fillColor alone only counts if it's a non-white color (white fill is just
+    // a readability background behind text labels, not a visible box).
+    const hasStroke = ps.strokeColor && ps.strokeColor !== "none";
+    const hasFill = ps.fillColor && ps.fillColor !== "none"
+      && ps.fillColor.toLowerCase() !== "#ffffff" && ps.fillColor.toLowerCase() !== "#fff"
+      && ps.fillColor.toLowerCase() !== "#f5f5f5";
+    if (hasStroke || hasFill) return "rect";
+    return "text";
+  }
+  if (flags.includes("image")) return "image";
+  if (ps.fillColor === "none" && ps.dashed === "1") return "dashed-group";
+  if (ps.shape === "flexArrow") return "arrow-shape";
+  return "rect";
+}
+
+// ─── SVG RENDERING FROM DRAWIO ───────────────────────────────────────────────
+
+// Canvas-based text measurement for accurate word wrapping (matches draw.io's DOM measurement)
+const _measureCanvas = document.createElement("canvas").getContext("2d");
+function measureTextWidth(text, font) {
+  _measureCanvas.font = font;
+  return _measureCanvas.measureText(text).width;
+}
+
+function svgEl(tag, attrs = {}, text = null) {
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  if (text !== null) el.textContent = text;
+  return el;
+}
+
+function renderFromDrawio() {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(drawioXml, "text/xml");
+  const { nodes, edges } = parseDrawioNodes(doc);
+
+  const svg = document.getElementById("pathway");
+  svg.innerHTML = "";
+  nodeAnalyteMap = []; // reset node tracking for overlay
+
+  // Compute bounding box across all nodes (handles negative coords)
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const n of Object.values(nodes)) {
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.w);
+    maxY = Math.max(maxY, n.y + n.h);
+  }
+  // Also include edge waypoints and floating endpoints in bounds
+  for (const e of edges) {
+    for (const wp of e.waypoints) {
+      minX = Math.min(minX, wp.x); minY = Math.min(minY, wp.y);
+      maxX = Math.max(maxX, wp.x); maxY = Math.max(maxY, wp.y);
+    }
+    for (const pt of [e.sourcePoint, e.targetPoint]) {
+      if (pt) {
+        minX = Math.min(minX, pt.x); minY = Math.min(minY, pt.y);
+        maxX = Math.max(maxX, pt.x); maxY = Math.max(maxY, pt.y);
+      }
+    }
+  }
+
+  if (!isFinite(minX)) { minX = 0; minY = 0; maxX = 960; maxY = 700; }
+  const PAD = 40;
+  minX -= PAD; minY -= PAD; maxX += PAD; maxY += PAD;
+  const W = maxX - minX;
+  const H = maxY - minY;
+
+  // Offset all coordinates so the diagram starts at (0,0)
+  const ox = -minX, oy = -minY;
+  for (const n of Object.values(nodes)) { n.x += ox; n.y += oy; }
+  for (const e of edges) {
+    for (const wp of e.waypoints) { wp.x += ox; wp.y += oy; }
+    if (e.sourcePoint) { e.sourcePoint.x += ox; e.sourcePoint.y += oy; }
+    if (e.targetPoint) { e.targetPoint.x += ox; e.targetPoint.y += oy; }
+  }
+
+  svg.setAttribute("width", W);
+  svg.setAttribute("height", H);
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+
+  // Defs for arrowheads (color-keyed so we can have per-edge colors)
+  const defs = svgEl("defs");
+  const markerColors = new Set(["#666", "#999", "#aaa"]);
+  for (const e of edges) {
+    const ps = parseStyle(e.style);
+    if (ps.strokeColor) markerColors.add(ps.strokeColor);
+  }
+  for (const rawColor of markerColors) {
+    const color = dimColor(rawColor);
+    const safeId = "arrow-" + rawColor.replace("#", "");
+    const marker = svgEl("marker", {
+      id: safeId, markerWidth: "8", markerHeight: "8", refX: "6", refY: "3", orient: "auto"
+    });
+    marker.appendChild(svgEl("path", { d: "M0,0 L0,6 L8,3 z", fill: color }));
+    defs.appendChild(marker);
+
+    // Open arrow variant
+    const openId = "arrow-open-" + rawColor.replace("#", "");
+    const openMarker = svgEl("marker", {
+      id: openId, markerWidth: "8", markerHeight: "8", refX: "6", refY: "3", orient: "auto"
+    });
+    openMarker.appendChild(svgEl("path", {
+      d: "M1,1 L7,3 L1,5", fill: "none", stroke: color, "stroke-width": "1"
+    }));
+    defs.appendChild(openMarker);
+
+    // Bidirectional arrow (for start marker)
+    const biId = "arrow-bi-" + rawColor.replace("#", "");
+    const biMarker = svgEl("marker", {
+      id: biId, markerWidth: "8", markerHeight: "8", refX: "2", refY: "3", orient: "auto-start-reverse"
+    });
+    biMarker.appendChild(svgEl("path", { d: "M0,0 L0,6 L8,3 z", fill: color }));
+    defs.appendChild(biMarker);
+  }
+  svg.appendChild(defs);
+
+  // Render layers: groups → edges → nodes (so nodes are on top)
+  // 1. Groups and dashed groups
+  for (const [id, n] of Object.entries(nodes)) {
+    const ps = parseStyle(n.style);
+    const nt = nodeType(ps);
+    if (nt === "group" || nt === "dashed-group") {
+      drawGroup(svg, n, ps, nt);
+    }
+  }
+
+  // 2. Edges
+  for (const edge of edges) {
+    drawEdge(svg, edge, nodes);
+  }
+
+  // 3. All visible nodes (text, rect, ellipse)
+  for (const [id, n] of Object.entries(nodes)) {
+    const ps = parseStyle(n.style);
+    const nt = nodeType(ps);
+    if (nt === "text") {
+      drawTextNode(svg, id, n, ps);
+    } else if (nt === "ellipse") {
+      drawEllipseNode(svg, id, n, ps);
+    } else if (nt === "rect" || nt === "arrow-shape") {
+      drawRectNode(svg, id, n, ps);
+    }
+    // groups/dashed-groups already drawn above; image nodes skipped
+  }
+
+  // Apply overlay if enabled
+  if (overlayEnabled) applyOverlay(svg);
+
+  // Resize SVG to fit all rendered content (catches edge labels, overlays, etc.)
+  requestAnimationFrame(() => {
+    const bbox = svg.getBBox();
+    if (bbox.width > 0 && bbox.height > 0) {
+      const pad = 20;
+      const vx = bbox.x - pad, vy = bbox.y - pad;
+      const vw = bbox.width + pad * 2, vh = bbox.height + pad * 2;
+      svg.setAttribute("viewBox", `${vx} ${vy} ${vw} ${vh}`);
+      svg.setAttribute("width", vw);
+      svg.setAttribute("height", vh);
+    }
+  });
+}
+
+// ─── OVERLAY RENDERING ────────────────────────────────────────────────────────
+
+function toggleOverlay() {
+  overlayEnabled = document.getElementById("overlay-toggle").checked;
+  sessionStorage.setItem("pv_overlay", overlayEnabled ? "1" : "");
+  document.getElementById("overlay-legend").classList.toggle("visible", overlayEnabled);
+  renderFromDrawio();
+  resetView();
+}
+
+function updateOverlay() {
+  if (overlayEnabled) {
+    renderFromDrawio();
+    resetView();
+  }
+}
+
+function applyOverlay(svg) {
+  const overlayG = svgEl("g", { class: "overlay-layer" });
+
+  for (const { g, label, node } of nodeAnalyteMap) {
+    const { score, hasData } = getOverlayScore(label);
+    const isNoData = !hasData || score === null;
+    const color = isNoData ? NODATA_COLOR : scoreToColor(score);
+    // Intensity: more abnormal = more opaque
+    const abnormality = score !== null ? Math.abs(score - 0.5) * 2 : 0; // 0–1
+
+    const pad = 8;
+    const ring = svgEl("rect", {
+      x: node.x - pad,
+      y: node.y - pad,
+      width: node.w + pad * 2,
+      height: node.h + pad * 2,
+      rx: 8,
+      fill: color,
+      opacity: isNoData ? "0.1" : (0.22 + 0.25 * abnormality).toFixed(2),
+      stroke: color,
+      "stroke-width": isNoData ? 1 : (2 + 2.5 * abnormality).toFixed(1),
+      "stroke-opacity": isNoData ? "0.25" : (0.5 + 0.5 * abnormality).toFixed(2),
+      class: "overlay-ring",
+    });
+    overlayG.appendChild(ring);
+
+  }
+
+  // ── Cofactor overlays: scan text nodes for analyte substrings ──
+  // Draw semi-transparent colored rects behind cofactor text labels
+  const cofactorNames = new Set([
+    "Fe", "Fe²⁺", "Fe³⁺", "Fe2+", "Fe3+",
+    "Cu", "Cu²⁺", "Cu2+",
+    "Zn", "Zn²⁺", "Zn2+", "Zn₂₊",
+    "Mg", "Mg²⁺", "Mg2+", "Mg₂₊",
+    "Mn", "Mn²⁺", "Mn2+",
+    "Ca", "Ca²⁺", "Ca2+",
+    "Se",
+    "FAD", "FMN", "NAD⁺", "NAD+", "NADH", "NADP", "NADPH",
+    "P5P", "TPP", "BH4", "BH₄",
+    "CoQ10", "Folate", "Riboflavin", "Thiamine", "Cobalamin",
+    "Ascorbate", "Glutathione", "GSH",
+  ]);
+
+  const mappedGroups = new Set(nodeAnalyteMap.map(e => e.g));
+  const textEls = svg.querySelectorAll("text");
+
+  for (const textEl of textEls) {
+    const parentG = textEl.closest("g.node-group");
+    if (parentG && mappedGroups.has(parentG)) continue;
+
+    const content = textEl.textContent.trim();
+    if (!content) continue;
+
+    // Find each matched token and highlight just that substring
+    // Sort longest-first so "Zn²⁺" matches before "Zn"
+    const sortedTokens = [...cofactorNames].sort((a, b) => b.length - a.length);
+    const coveredRanges = []; // [{start, end}] to avoid overlapping highlights
+    for (const token of sortedTokens) {
+      const idx = content.indexOf(token);
+      if (idx === -1) continue;
+      if (idx > 0 && /[a-zA-Z]/.test(content[idx - 1])) continue;
+      const afterIdx = idx + token.length;
+      if (afterIdx < content.length && /[a-zA-Z]/.test(content[afterIdx])) continue;
+
+      // Skip if this range overlaps with an already-highlighted token
+      const tokenEnd = idx + token.length;
+      if (coveredRanges.some(r => idx < r.end && tokenEnd > r.start)) continue;
+
+      const analyteLabel = resolveAnalyteLabel(token);
+      if (!analyteLabel) continue;
+      const { score, hasData } = getOverlayScore(analyteLabel);
+      if (!hasData || score === null) continue;
+
+      coveredRanges.push({ start: idx, end: tokenEnd });
+
+      const color = scoreToColor(score);
+      const abnormality = Math.abs(score - 0.5) * 2;
+      const fontSize = parseFloat(textEl.getAttribute("font-size")) || 11;
+
+      // Use SVG text measurement to get exact token position
+      try {
+        const startPos = textEl.getStartPositionOfChar(idx);
+        const tokenLen = textEl.getSubStringLength(idx, token.length);
+        const pad = 2;
+
+        const rect = svgEl("rect", {
+          x: startPos.x - pad,
+          y: startPos.y - fontSize * 0.85,
+          width: tokenLen + pad * 2,
+          height: fontSize * 1.2 + pad,
+          rx: 3,
+          fill: color,
+          opacity: (0.25 + 0.25 * abnormality).toFixed(2),
+          style: "cursor:pointer",
+        });
+        rect.addEventListener("click", () => openPanel(analyteLabel));
+
+        // Inherit rotation transform from parent group so rotated labels align
+        const parentG = textEl.closest("g[transform]");
+        if (parentG) {
+          const wrapper = svgEl("g", { transform: parentG.getAttribute("transform") });
+          wrapper.appendChild(rect);
+          overlayG.appendChild(wrapper);
+        } else {
+          overlayG.appendChild(rect);
+        }
+      } catch (e) {
+        // getStartPositionOfChar can throw if index is out of range
+      }
+    }
+  }
+
+  svg.appendChild(overlayG);
+}
+
+// ─── NODE DRAWING ─────────────────────────────────────────────────────────────
+
+/** Apply inherited group rotation transform to SVG group.
+ *  Note: opacity is NOT applied to the group — mxGraph separates shape opacity
+ *  (style.opacity, applied to rect/ellipse/path) from text opacity
+ *  (style.textOpacity, applied to text elements). */
+function applyNodeTransform(g, node, ps) {
+  const transforms = [];
+  const totalRotation = nodeRotation(node, ps);
+  if (totalRotation) {
+    const cx = node.x + node.w / 2;
+    const cy = node.y + node.h / 2;
+    transforms.push(`rotate(${totalRotation} ${cx} ${cy})`);
+  }
+  if (transforms.length) g.setAttribute("transform", transforms.join(" "));
+}
+
+/** Get shape opacity (0-1) from style. Applies to rect/ellipse/path, not text. */
+function shapeOpacity(ps) {
+  return ps.opacity ? parseFloat(ps.opacity) / 100 : 1;
+}
+
+/** Get text opacity (0-1) from style. Uses textOpacity if set, else 1 (fully opaque). */
+function textOpacity(ps) {
+  if (ps.textOpacity) return parseFloat(ps.textOpacity) / 100;
+  return 1;
+}
+
+function drawGroup(svg, node, ps, nt) {
+  const g = svgEl("g");
+  applyNodeTransform(g, node, ps);
+  const color = dimColor(ps.strokeColor || "#888");
+  const isDashed = nt === "dashed-group" || ps.dashed === "1";
+
+  if (ps.strokeColor && ps.strokeColor !== "none") {
+    const attrs = {
+      x: node.x, y: node.y, width: node.w, height: node.h, rx: 6,
+      fill: dimColor(ps.fillColor || "none"), stroke: color,
+      "stroke-width": ps.strokeWidth || 1
+    };
+    if (isDashed) attrs["stroke-dasharray"] = "8 4";
+    const sOp = shapeOpacity(ps);
+    if (sOp < 1) attrs["opacity"] = sOp;
+    g.appendChild(svgEl("rect", attrs));
+  }
+
+  if (node.value) {
+    const text = htmlToPlainText(node.value);
+    const vAlign = ps.verticalAlign || "bottom";
+    let ly = vAlign === "bottom" ? node.y + node.h - 8
+           : vAlign === "top" ? node.y + 16
+           : node.y + node.h / 2 + 4;
+    const textAttrs = {
+      x: node.x + node.w / 2, y: ly,
+      "text-anchor": "middle", fill: dimColor(ps.fontColor || color),
+      "font-size": Math.min(parseFloat(ps.fontSize) || 12, 24), "font-weight": 700,
+      "letter-spacing": "0.06em"
+    };
+    const tOp = textOpacity(ps);
+    if (tOp < 1) textAttrs["opacity"] = tOp;
+    g.appendChild(svgEl("text", textAttrs, text));
+  }
+  svg.appendChild(g);
+}
+
+function drawTextNode(svg, id, node, ps) {
+  const text = htmlToPlainText(node.value);
+  if (!text) return;
+
+  const g = svgEl("g", { class: "node-group" });
+  // Try data-metabolite ID first (b3_nad), then label-based lookup
+  const analyteLabel = resolveAnalyteLabel(text);
+  const data = analyteLabel ? { label: analyteLabel, ...ANALYTE_DATA[analyteLabel] } : null;
+  if (data) {
+    g.style.cursor = "pointer";
+    g.addEventListener("click", () => openPanel(analyteLabel));
+    nodeAnalyteMap.push({ g, label: analyteLabel, node });
+  }
+
+  const fontSize = parseFloat(ps.fontSize) || 11;
+  const inlineColor = extractInlineFontColor(node.value);
+  const fontColor = dimColor(inlineColor || ps.fontColor || "#000");
+  const bold = ps.fontStyle === "1" || ps.fontStyle === "3";
+  const align = ps.align || "center";
+  const vAlign = ps.verticalAlign || "middle";
+
+  const lines = text.split("\n").filter(l => l.trim());
+  const lineH = fontSize * 1.2;
+
+  // Vertical position
+  let startY;
+  if (vAlign === "top") {
+    startY = node.y + fontSize;
+  } else if (vAlign === "bottom") {
+    startY = node.y + node.h - (lines.length - 1) * lineH;
+  } else {
+    startY = node.y + node.h / 2 - ((lines.length - 1) * lineH) / 2 + fontSize * 0.35;
+  }
+
+  // Horizontal position
+  let tx, anchor;
+  if (align === "left") {
+    tx = node.x + 2;
+    anchor = "start";
+  } else if (align === "right") {
+    tx = node.x + node.w - 2;
+    anchor = "end";
+  } else {
+    tx = node.x + node.w / 2;
+    anchor = "middle";
+  }
+
+  // Handle rotation (own rotation + inherited from parent groups)
+  applyNodeTransform(g, node, ps);
+
+  // For text-only nodes: only use textOpacity if explicitly set.
+  // mxGraph's 'opacity' applies to shape fill/stroke only — text-only nodes
+  // have no shape, so opacity has no effect. Text remains fully opaque.
+  const tOp = textOpacity(ps);
+  const perLineColors = extractPerLineColors(node.value);
+
+  for (let i = 0; i < lines.length; i++) {
+    const textAttrs = {
+      x: tx, y: startY + i * lineH,
+      "text-anchor": anchor,
+      fill: dimColor(perLineColors[i]) || fontColor,
+      "font-size": fontSize,
+      "font-weight": bold ? 700 : 400
+    };
+    if (tOp < 1) textAttrs["opacity"] = tOp;
+    g.appendChild(svgEl("text", textAttrs, lines[i]));
+  }
+
+  svg.appendChild(g);
+}
+
+function drawEllipseNode(svg, id, node, ps) {
+  const g = svgEl("g", { class: "node-group" });
+  applyNodeTransform(g, node, ps);
+  const text = htmlToPlainText(node.value);
+  const analyteLabel = resolveAnalyteLabel(text);
+  const data = analyteLabel ? { label: analyteLabel, ...ANALYTE_DATA[analyteLabel] } : null;
+  if (data) {
+    g.style.cursor = "pointer";
+    g.addEventListener("click", () => openPanel(analyteLabel));
+    nodeAnalyteMap.push({ g, label: analyteLabel, node });
+  }
+
+  const cx = node.x + node.w / 2;
+  const cy = node.y + node.h / 2;
+  const fill = ps.fillColor || "none";
+  const stroke = ps.strokeColor || "#666";
+  const dashed = ps.dashed === "1";
+
+  const attrs = {
+    cx, cy, rx: node.w / 2, ry: node.h / 2,
+    fill: fill === "none" ? "none" : dimColor(fill),
+    stroke: stroke === "none" ? "none" : dimColor(stroke),
+    "stroke-width": ps.strokeWidth || 1
+  };
+  if (dashed) attrs["stroke-dasharray"] = "6 4";
+  const sOp = shapeOpacity(ps);
+  if (sOp < 1) attrs["opacity"] = sOp;
+  g.appendChild(svgEl("ellipse", attrs));
+
+  // Label (text already extracted above for analyte lookup)
+  if (text) {
+    const fontSize = parseFloat(ps.fontSize) || 14;
+    const textAttrs = {
+      x: cx, y: cy + fontSize * 0.35,
+      "text-anchor": "middle",
+      fill: dimColor(ps.fontColor || "#000"),
+      "font-size": fontSize,
+      "font-weight": ps.fontStyle === "1" ? 700 : 400
+    };
+    const tOp = textOpacity(ps);
+    if (tOp < 1) textAttrs["opacity"] = tOp;
+    g.appendChild(svgEl("text", textAttrs, text));
+  }
+
+  svg.appendChild(g);
+}
+
+function drawRectNode(svg, id, node, ps) {
+  const g = svgEl("g", { class: "node-group" });
+  applyNodeTransform(g, node, ps);
+  const text = htmlToPlainText(node.value);
+  const analyteLabel = resolveAnalyteLabel(text);
+  const data = analyteLabel ? { label: analyteLabel, ...ANALYTE_DATA[analyteLabel] } : null;
+  if (data) {
+    g.style.cursor = "pointer";
+    g.addEventListener("click", () => openPanel(analyteLabel));
+    nodeAnalyteMap.push({ g, label: analyteLabel, node });
+  }
+
+  const fill = ps.fillColor || "#f5f5f5";
+  const stroke = ps.strokeColor || "#aaa";
+  const dashed = ps.dashed === "1";
+  const rounded = ps.rounded === "1" ? 10 : 3;
+
+  const attrs = {
+    x: node.x, y: node.y, width: node.w, height: node.h,
+    rx: rounded,
+    fill: fill === "none" ? "none" : dimColor(fill),
+    stroke: stroke === "none" ? "none" : dimColor(stroke),
+    "stroke-width": ps.strokeWidth || 1,
+    class: "node-rect"
+  };
+  if (dashed) attrs["stroke-dasharray"] = "6 4";
+  const sOp = shapeOpacity(ps);
+  if (sOp < 1) attrs["opacity"] = sOp;
+  g.appendChild(svgEl("rect", attrs));
+
+  // text already extracted above for analyte lookup
+  if (text) {
+    const isPromotedText = (ps._flags || []).includes("text");
+    let fontSize = parseFloat(ps.fontSize) || (isPromotedText ? 11 : 14);
+    const bold = ps.fontStyle === "1" || ps.fontStyle === "3";
+    const fontWeight = bold ? 700 : 400;
+
+    // Match draw.io's spacing: default 2px + per-side spacing from style
+    const baseSpacing = parseFloat(ps.spacing) || 2;
+    const spacingL = baseSpacing + (parseFloat(ps.spacingLeft) || 0);
+    const spacingR = baseSpacing + (parseFloat(ps.spacingRight) || 0);
+    const availW = node.w - spacingL - spacingR;
+
+    // Word-wrap using canvas text measurement (matches draw.io's DOM-based approach)
+    let lines = text.split("\n").filter(l => l.trim());
+    const shouldWrap = ps.whiteSpace === "wrap" || isPromotedText;
+
+    function wrapLines(inputLines, fs) {
+      if (!shouldWrap) return inputLines;
+      const font = `${bold ? 'bold ' : ''}${fs}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+      const wrapped = [];
+      for (const line of inputLines) {
+        const words = line.split(/\s+/);
+        if (words.length <= 1) { wrapped.push(line); continue; }
+        let cur = words[0];
+        for (let w = 1; w < words.length; w++) {
+          const test = cur + " " + words[w];
+          if (measureTextWidth(test, font) > availW) {
+            wrapped.push(cur);
+            cur = words[w];
+          } else {
+            cur = test;
+          }
+        }
+        wrapped.push(cur);
+      }
+      return wrapped;
+    }
+
+    lines = wrapLines(lines, fontSize);
+
+    // Auto-shrink font size so all lines fit inside the rectangle
+    // Match draw.io's LINE_HEIGHT constant of 1.2
+    const spacingT = baseSpacing + (parseFloat(ps.spacingTop) || 0);
+    const spacingB = baseSpacing + (parseFloat(ps.spacingBottom) || 0);
+    const availH = node.h - spacingT - spacingB;
+    const maxIter = 20;
+    for (let iter = 0; iter < maxIter && fontSize > 4; iter++) {
+      const lineH = fontSize * 1.2;
+      const totalTextH = lines.length * lineH;
+      const font = `${bold ? 'bold ' : ''}${fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+      const maxLineW = Math.max(...lines.map(l => measureTextWidth(l, font)));
+      if (totalTextH <= availH && maxLineW <= availW) break;
+      fontSize *= 0.9;
+      lines = wrapLines(text.split("\n").filter(l => l.trim()), fontSize);
+    }
+
+    // Match draw.io's LINE_HEIGHT of 1.2
+    const lineH = fontSize * 1.2;
+    const startY = node.y + node.h / 2 - ((lines.length - 1) * lineH) / 2 + fontSize * 0.35;
+
+    const tOp = textOpacity(ps);
+    const inlineColor = extractInlineFontColor(node.value);
+    const perLineColors = extractPerLineColors(node.value);
+    const defaultFill = dimColor(inlineColor || ps.fontColor || "#000");
+    for (let i = 0; i < lines.length; i++) {
+      const textAttrs = {
+        x: node.x + node.w / 2, y: startY + i * lineH,
+        "text-anchor": "middle",
+        fill: dimColor(perLineColors[i]) || defaultFill,
+        "font-size": fontSize,
+        "font-weight": fontWeight,
+        class: "node-label"
+      };
+      if (tOp < 1) textAttrs["opacity"] = tOp;
+      g.appendChild(svgEl("text", textAttrs, lines[i]));
+    }
+  }
+
+  svg.appendChild(g);
+}
+
+function drawBadge(g, node, badge) {
+  const bs = BADGE_STYLES[badge.type] || BADGE_STYLES.ok;
+  const bw = badge.text.length * 6.5 + 10;
+  const bh = 18;
+  const bx = node.x + (node.w - bw) / 2;
+  const by = node.y - bh / 2 - 1;
+  g.appendChild(svgEl("rect", { x: bx, y: by, width: bw, height: bh, rx: 4, fill: bs.fill }));
+  g.appendChild(svgEl("text", {
+    x: bx + bw / 2, y: by + 12,
+    "text-anchor": "middle", fill: bs.text, "font-size": 10, "font-weight": 700
+  }, badge.text));
+}
+
+// ─── EDGE DRAWING ─────────────────────────────────────────────────────────────
+
+/** Rotate a point (px,py) around center (cx,cy) by angle in degrees */
+function rotatePoint(px, py, cx, cy, angleDeg) {
+  if (!angleDeg) return { x: px, y: py };
+  const rad = angleDeg * Math.PI / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  const dx = px - cx;
+  const dy = py - cy;
+  return { x: cx + dx * cos - dy * sin, y: cy + dx * sin + dy * cos };
+}
+
+/** Get the total visual rotation of a node.
+ *  If the node has its own rotation style (even rotation=0), use that (absolute).
+ *  Otherwise, inherit parent group rotation. */
+function nodeRotation(node, ps) {
+  if (ps.rotation !== undefined) return parseFloat(ps.rotation) || 0;
+  return node._parentRotation || 0;
+}
+
+/** Find the point on a node's boundary nearest to an external point */
+/** Find the point on a node's boundary nearest to an external point.
+ *  Uses expanded perimeter bounds (like draw.io's getPerimeterBounds with border)
+ *  so connection points sit slightly outside the filled rect, preventing arrow
+ *  markers from being hidden under the node fill. */
+function nearestBoundaryPoint(node, pt, border) {
+  // Default border: half the stroke width + 1px for the arrow marker tip.
+  // This matches draw.io's perimeterSpacing behavior.
+  if (border === undefined) {
+    const ns = parseStyle(node.style);
+    border = (parseFloat(ns.strokeWidth) || 1) / 2 + 1;
+  }
+  const hw = node.w / 2 + border;
+  const hh = node.h / 2 + border;
+  const cx = node.x + node.w / 2;
+  const cy = node.y + node.h / 2;
+  const rot = nodeRotation(node, parseStyle(node.style));
+
+  let localPt = pt;
+  if (rot) localPt = rotatePoint(pt.x, pt.y, cx, cy, -rot);
+
+  const dx = localPt.x - cx;
+  const dy = localPt.y - cy;
+
+  if (dx === 0 && dy === 0) {
+    const p = { x: cx, y: cy - hh };
+    return rot ? rotatePoint(p.x, p.y, cx, cy, rot) : p;
+  }
+
+  // Scale to expanded boundary
+  const scaleX = hw / Math.abs(dx || 0.001);
+  const scaleY = hh / Math.abs(dy || 0.001);
+  const scale = Math.min(scaleX, scaleY);
+
+  const bx = cx + dx * scale;
+  const by = cy + dy * scale;
+  return rot ? rotatePoint(bx, by, cx, cy, rot) : { x: bx, y: by };
+}
+
+function drawEdge(svg, edge, nodes) {
+  const ps = parseStyle(edge.style);
+  const src = nodes[edge.source];
+  const tgt = nodes[edge.target];
+
+  // Need at least one resolvable endpoint
+  if (!src && !edge.sourcePoint && !tgt && !edge.targetPoint) return;
+
+  const rawColor = ps.strokeColor || "#666";
+  const color = dimColor(rawColor);
+  const dashed = ps.dashed === "1";
+  const curved = ps.curved === "1";
+  const endArrow = ps.endArrow || "classic";
+  const startArrow = ps.startArrow || "none";
+  // Bidirectional only when BOTH ends have arrows
+  const hasStartArrow = (startArrow === "block" || startArrow === "classic") &&
+                        (ps.startFill !== "0");
+  const hasEndArrow = endArrow !== "none";
+  const bidir = hasStartArrow && hasEndArrow;
+
+  // Connection points — use node boundary, or fall back to sourcePoint/targetPoint
+  let x1, y1, x2, y2;
+
+  // Helper: compute connection point on a node, accounting for rotation.
+  // Pushes the point slightly outward from the node center so arrow tips
+  // aren't hidden under the node fill (matching draw.io's perimeterSpacing).
+  function connectionPoint(node, fractX, fractY) {
+    const cx = node.x + node.w / 2;
+    const cy = node.y + node.h / 2;
+    const lx = node.x + node.w * fractX;
+    const ly = node.y + node.h * fractY;
+    // Push outward by ~1.5px
+    const dx = lx - cx, dy = ly - cy;
+    const dist = Math.hypot(dx, dy);
+    const push = dist > 0.1 ? 1.5 / dist : 0;
+    const px = lx + dx * push;
+    const py = ly + dy * push;
+    const rot = nodeRotation(node, parseStyle(node.style));
+    if (rot) {
+      return rotatePoint(px, py, cx, cy, rot);
+    }
+    return { x: px, y: py };
+  }
+
+  if (src) {
+    if (ps.exitX !== undefined && ps.exitY !== undefined) {
+      const cp = connectionPoint(src, parseFloat(ps.exitX), parseFloat(ps.exitY));
+      x1 = cp.x; y1 = cp.y;
+    } else {
+      // When waypoints exist, exit toward the first waypoint, not the target center.
+      // This ensures the arrow leaves the source node in the correct direction.
+      const firstWp = edge.waypoints.length > 0 ? edge.waypoints[0] : null;
+      const tc = firstWp
+               || (tgt ? { x: tgt.x + tgt.w / 2, y: tgt.y + tgt.h / 2 }
+                       : (edge.targetPoint || { x: src.x + src.w / 2, y: src.y }));
+      ({ x: x1, y: y1 } = nearestBoundaryPoint(src, tc));
+    }
+  } else if (edge.sourcePoint) {
+    x1 = edge.sourcePoint.x; y1 = edge.sourcePoint.y;
+  } else {
+    return; // can't determine start
+  }
+
+  if (tgt) {
+    if (ps.entryX !== undefined && ps.entryY !== undefined) {
+      const cp = connectionPoint(tgt, parseFloat(ps.entryX), parseFloat(ps.entryY));
+      x2 = cp.x; y2 = cp.y;
+    } else {
+      // When waypoints exist, enter from the last waypoint direction.
+      const lastWp = edge.waypoints.length > 0 ? edge.waypoints[edge.waypoints.length - 1] : null;
+      const sc = lastWp
+               || (src ? { x: src.x + src.w / 2, y: src.y + src.h / 2 }
+                       : (edge.sourcePoint || { x: tgt.x + tgt.w / 2, y: tgt.y }));
+      ({ x: x2, y: y2 } = nearestBoundaryPoint(tgt, sc));
+    }
+  } else if (edge.targetPoint) {
+    x2 = edge.targetPoint.x; y2 = edge.targetPoint.y;
+  } else {
+    return; // can't determine end
+  }
+
+  // Build path
+  let d;
+  if (edge.waypoints.length > 0) {
+    const pts = [{ x: x1, y: y1 }, ...edge.waypoints, { x: x2, y: y2 }];
+    if (curved && pts.length >= 3) {
+      d = buildCurvedPath(pts);
+    } else {
+      d = `M${pts[0].x},${pts[0].y}`;
+      for (let i = 1; i < pts.length; i++) d += ` L${pts[i].x},${pts[i].y}`;
+    }
+  } else if (ps.edgeStyle === "orthogonalEdgeStyle") {
+    const eX = parseFloat(ps.exitX ?? 0.5);
+    const eY = parseFloat(ps.exitY ?? 0.5);
+    const nX = parseFloat(ps.entryX ?? 0.5);
+    const nY = parseFloat(ps.entryY ?? 0.5);
+    d = buildOrthogonalPath(x1, y1, x2, y2, eX, eY, nX, nY);
+  } else {
+    // Straight line (curved=1 with no waypoints is still straight in draw.io —
+    // the curved flag only affects waypoint interpolation, not direct connections)
+    // Straight line
+    d = `M${x1},${y1} L${x2},${y2}`;
+  }
+
+  // flexArrow: draw as a thick filled polygon arrow shape
+  if (ps.shape === "flexArrow") {
+    const fillColor = dimColor(ps.fillColor || color);
+    const arrowW = parseFloat(ps.width) || 15;
+    const headW = arrowW * 1.8;  // arrowhead wider than body
+    const headL = arrowW * 1.5;  // arrowhead length
+
+    // Determine arrow direction: startArrow=block means arrowhead at start (source)
+    const arrowAtStart = (startArrow === "block" || startArrow === "classic") && endArrow === "none";
+    let ax1 = x1, ay1 = y1, ax2 = x2, ay2 = y2;
+    if (arrowAtStart) {
+      // Flip so arrow tip is at source point
+      ax1 = x2; ay1 = y2; ax2 = x1; ay2 = y1;
+    }
+
+    const dx = ax2 - ax1, dy = ay2 - ay1;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 1) { /* degenerate */ } else {
+      const ux = dx / dist, uy = dy / dist;  // unit vector along arrow
+      const px = -uy, py = ux;               // perpendicular
+
+      // Body goes from start to (end - headL)
+      const bodyEnd = Math.max(0, dist - headL);
+      const bx = ax1 + ux * bodyEnd, by = ay1 + uy * bodyEnd;
+
+      // Polygon points: body left side → head left → tip → head right → body right side → back to start
+      const hw = arrowW / 2;
+      const hhw = headW / 2;
+      const points = [
+        `${ax1 + px * hw},${ay1 + py * hw}`,           // body start left
+        `${bx + px * hw},${by + py * hw}`,               // body end left
+        `${bx + px * hhw},${by + py * hhw}`,             // head left
+        `${ax2},${ay2}`,                                  // tip
+        `${bx - px * hhw},${by - py * hhw}`,             // head right
+        `${bx - px * hw},${by - py * hw}`,               // body end right
+        `${ax1 - px * hw},${ay1 - py * hw}`,             // body start right
+      ].join(" ");
+
+      const polyAttrs = { points, fill: fillColor, stroke: color, "stroke-width": 1 };
+      if (ps.opacity) polyAttrs["opacity"] = parseFloat(ps.opacity) / 100;
+      svg.appendChild(svgEl("polygon", polyAttrs));
+    }
+  } else {
+  // Markers
+  const colorKey = rawColor.replace("#", "");
+  let markerEnd = null, markerStart = null;
+
+  if (endArrow === "none") {
+    markerEnd = null;
+  } else if (endArrow === "open") {
+    markerEnd = `url(#arrow-open-${colorKey})`;
+  } else {
+    markerEnd = `url(#arrow-${colorKey})`;
+  }
+
+  if (bidir) {
+    markerStart = `url(#arrow-bi-${colorKey})`;
+    markerEnd = `url(#arrow-bi-${colorKey})`;
+  } else if (hasStartArrow && !hasEndArrow) {
+    // Arrow only at the start end. SVG marker-start orients along the path,
+    // but draw.io startArrow points INTO the source node (opposite direction).
+    // Fix: reverse the path so the arrowhead becomes marker-end at the original start.
+    d = reversePath(d);
+    markerEnd = `url(#arrow-${colorKey})`;
+  }
+
+  const attrs = {
+    d, fill: "none", stroke: color,
+    "stroke-width": ps.strokeWidth || 1
+  };
+  if (markerEnd) attrs["marker-end"] = markerEnd;
+  if (markerStart) attrs["marker-start"] = markerStart;
+  if (dashed) attrs["stroke-dasharray"] = "6 4";
+  if (ps.opacity) attrs["opacity"] = parseFloat(ps.opacity) / 100;
+  svg.appendChild(svgEl("path", attrs));
+  } // end non-flexArrow
+
+  // Edge label
+  if (edge.value) {
+    const text = htmlToPlainText(edge.value);
+    if (!text) return;
+    const lines = text.split("\n").filter(l => l.trim());
+    if (lines.length === 0) return;
+
+    // Position label along edge using labelX (0=mid, -1=source, 1=target)
+    // and labelY (perpendicular offset in px)
+    const allPts = [{ x: x1, y: y1 }, ...edge.waypoints, { x: x2, y: y2 }];
+    const fraction = (edge.labelX + 1) / 2; // convert -1..1 to 0..1
+    let lx, ly;
+    ({ x: lx, y: ly } = pathPointAtFraction(allPts, fraction));
+    // Apply perpendicular offset
+    if (edge.labelY) {
+      // Compute perpendicular direction at label point
+      const segIdx = Math.min(Math.max(Math.floor(fraction * (allPts.length - 1)), 0), allPts.length - 2);
+      const dx = allPts[segIdx + 1].x - allPts[segIdx].x;
+      const dy = allPts[segIdx + 1].y - allPts[segIdx].y;
+      const len = Math.hypot(dx, dy) || 1;
+      lx += (-dy / len) * edge.labelY;
+      ly += (dx / len) * edge.labelY;
+    }
+
+    const fontSize = Math.min(parseFloat(ps.fontSize) || 11, 24);
+    const fontColor = dimColor(ps.fontColor || "#666");
+    const lineH = fontSize * 1.2;
+
+    // Background (skip if labelBackgroundColor=none)
+    if (ps.labelBackgroundColor !== "none") {
+      const approxW = Math.max(...lines.map(l => l.length)) * fontSize * 0.6 + 8;
+      const totalH = lines.length * lineH + 4;
+      svg.appendChild(svgEl("rect", {
+        x: lx - approxW / 2, y: ly - totalH / 2,
+        width: approxW, height: totalH,
+        fill: dimColor(ps.labelBackgroundColor || "#f8f9fa"), rx: 2, opacity: "0.85"
+      }));
+    }
+
+    const startLy = ly - ((lines.length - 1) * lineH) / 2 + fontSize * 0.35;
+    for (let i = 0; i < lines.length; i++) {
+      svg.appendChild(svgEl("text", {
+        x: lx, y: startLy + i * lineH,
+        "text-anchor": "middle",
+        fill: fontColor, "font-size": fontSize
+      }, lines[i]));
+    }
+  }
+}
+
+/** Reverse an SVG path string so it traces the same shape in the opposite direction.
+ *  Supports M, L, Q, C commands. */
+function reversePath(d) {
+  const re = /([MLQC])\s*([\d.\-e,\s]+)/gi;
+  const cmds = [];
+  let m;
+  while ((m = re.exec(d)) !== null) {
+    cmds.push({ type: m[1].toUpperCase(), nums: m[2].trim().split(/[\s,]+/).map(Number) });
+  }
+  if (cmds.length === 0) return d;
+
+  // Parse into segments: {type: 'L'|'Q'|'C', start, end, cp1?, cp2?}
+  const segments = [];
+  let cur = null;
+  for (const cmd of cmds) {
+    if (cmd.type === "M") {
+      cur = { x: cmd.nums[0], y: cmd.nums[1] };
+    } else if (cmd.type === "L") {
+      const end = { x: cmd.nums[0], y: cmd.nums[1] };
+      segments.push({ type: "L", start: cur, end });
+      cur = end;
+    } else if (cmd.type === "Q") {
+      for (let i = 0; i < cmd.nums.length; i += 4) {
+        const end = { x: cmd.nums[i + 2], y: cmd.nums[i + 3] };
+        segments.push({ type: "Q", start: cur, cp: { x: cmd.nums[i], y: cmd.nums[i + 1] }, end });
+        cur = end;
+      }
+    } else if (cmd.type === "C") {
+      for (let i = 0; i < cmd.nums.length; i += 6) {
+        const end = { x: cmd.nums[i + 4], y: cmd.nums[i + 5] };
+        segments.push({
+          type: "C", start: cur,
+          cp1: { x: cmd.nums[i], y: cmd.nums[i + 1] },
+          cp2: { x: cmd.nums[i + 2], y: cmd.nums[i + 3] }, end
+        });
+        cur = end;
+      }
+    }
+  }
+
+  segments.reverse();
+  let rd = `M${segments[0].end.x},${segments[0].end.y}`;
+  for (const seg of segments) {
+    if (seg.type === "C") {
+      rd += ` C${seg.cp2.x},${seg.cp2.y} ${seg.cp1.x},${seg.cp1.y} ${seg.start.x},${seg.start.y}`;
+    } else if (seg.type === "Q") {
+      rd += ` Q${seg.cp.x},${seg.cp.y} ${seg.start.x},${seg.start.y}`;
+    } else {
+      rd += ` L${seg.start.x},${seg.start.y}`;
+    }
+  }
+  return rd;
+}
+
+function pathPointAtFraction(pts, frac) {
+  if (pts.length < 2) return pts[0] || { x: 0, y: 0 };
+  let totalLen = 0;
+  const segLens = [];
+  for (let i = 1; i < pts.length; i++) {
+    const sl = Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+    segLens.push(sl);
+    totalLen += sl;
+  }
+  let target = totalLen * Math.max(0, Math.min(1, frac)), accum = 0;
+  for (let i = 0; i < segLens.length; i++) {
+    if (accum + segLens[i] >= target) {
+      const t = segLens[i] > 0 ? (target - accum) / segLens[i] : 0;
+      return {
+        x: pts[i].x + (pts[i+1].x - pts[i].x) * t,
+        y: pts[i].y + (pts[i+1].y - pts[i].y) * t
+      };
+    }
+    accum += segLens[i];
+  }
+  return { x: pts[pts.length-1].x, y: pts[pts.length-1].y };
+}
+
+function pathMidpoint(pts) {
+  let totalLen = 0;
+  const segLens = [];
+  for (let i = 1; i < pts.length; i++) {
+    const sl = Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+    segLens.push(sl);
+    totalLen += sl;
+  }
+  let target = totalLen / 2, accum = 0;
+  for (let i = 0; i < segLens.length; i++) {
+    if (accum + segLens[i] >= target) {
+      const t = segLens[i] > 0 ? (target - accum) / segLens[i] : 0;
+      return {
+        x: pts[i].x + (pts[i+1].x - pts[i].x) * t,
+        y: pts[i].y + (pts[i+1].y - pts[i].y) * t
+      };
+    }
+    accum += segLens[i];
+  }
+  return { x: (pts[0].x + pts[pts.length-1].x) / 2, y: (pts[0].y + pts[pts.length-1].y) / 2 };
+}
+
+function buildCurvedPath(pts) {
+  if (pts.length === 2) return `M${pts[0].x},${pts[0].y} L${pts[1].x},${pts[1].y}`;
+  // Matches draw.io's paintCurvedLine algorithm from mxPolyline.js:
+  // Uses quadratic bezier curves with midpoints as endpoints and
+  // waypoints as control points.
+  let d = `M${pts[0].x},${pts[0].y}`;
+  for (let i = 1; i < pts.length - 2; i++) {
+    const p0 = pts[i];
+    const p1 = pts[i + 1];
+    const ix = (p0.x + p1.x) / 2;
+    const iy = (p0.y + p1.y) / 2;
+    d += ` Q${p0.x},${p0.y} ${ix},${iy}`;
+  }
+  // Final segment: quadratic bezier to the last point
+  const pn2 = pts[pts.length - 2];
+  const pn1 = pts[pts.length - 1];
+  d += ` Q${pn2.x},${pn2.y} ${pn1.x},${pn1.y}`;
+  return d;
+}
+
+function buildOrthogonalPath(x1, y1, x2, y2, exitX, exitY, entryX, entryY) {
+  const exitDir = getDirection(exitX, exitY);
+  const entryDir = getDirection(entryX, entryY);
+  const GAP = 20;
+
+  if (exitDir === "right" && entryDir === "left") {
+    const mx = (x1 + x2) / 2;
+    return `M${x1},${y1} L${mx},${y1} L${mx},${y2} L${x2},${y2}`;
+  }
+  if (exitDir === "bottom" && entryDir === "top") {
+    const my = (y1 + y2) / 2;
+    return `M${x1},${y1} L${x1},${my} L${x2},${my} L${x2},${y2}`;
+  }
+  if (exitDir === "top" && entryDir === "bottom") {
+    const my = (y1 + y2) / 2;
+    return `M${x1},${y1} L${x1},${my} L${x2},${my} L${x2},${y2}`;
+  }
+  if (exitDir === "left" && entryDir === "left") {
+    const leftX = Math.min(x1, x2) - GAP;
+    return `M${x1},${y1} L${leftX},${y1} L${leftX},${y2} L${x2},${y2}`;
+  }
+  if (exitDir === "right" && (entryDir === "bottom" || entryDir === "top")) {
+    return `M${x1},${y1} L${x2},${y1} L${x2},${y2}`;
+  }
+  if (exitDir === "bottom" && entryDir === "bottom") {
+    const botY = Math.max(y1, y2) + GAP;
+    return `M${x1},${y1} L${x1},${botY} L${x2},${botY} L${x2},${y2}`;
+  }
+  // Fallback: L-shape (avoid zero-length final segment when coords are the same)
+  if (exitDir === "right" || exitDir === "left") {
+    if (Math.abs(y1 - y2) < 0.5) return `M${x1},${y1} L${x2},${y2}`;
+    return `M${x1},${y1} L${x2},${y1} L${x2},${y2}`;
+  }
+  if (Math.abs(x1 - x2) < 0.5) return `M${x1},${y1} L${x2},${y2}`;
+  return `M${x1},${y1} L${x1},${y2} L${x2},${y2}`;
+}
+
+function getDirection(px, py) {
+  if (px >= 0.9) return "right";
+  if (px <= 0.1) return "left";
+  if (py >= 0.9) return "bottom";
+  if (py <= 0.1) return "top";
+  if (px > 0.5) return "right";
+  if (px < 0.5) return "left";
+  if (py > 0.5) return "bottom";
+  return "top";
+}
+
+// ─── DRAW.IO EMBED EDITOR ────────────────────────────────────────────────────
+
+let editorActive = false;
+let editorFrame = null;
+
+function toggleEditor() {
+  if (editorActive) {
+    exitEditor();
+  } else {
+    enterEditor();
+  }
+}
+
+function enterEditor() {
+  editorActive = true;
+  document.getElementById("edit-btn").classList.add("active");
+  document.getElementById("edit-btn").textContent = "Editing...";
+  document.getElementById("viewer-container").style.display = "none";
+  document.getElementById("detail-panel").classList.add("hidden");
+
+  const container = document.getElementById("editor-container");
+  container.style.display = "flex";
+
+  editorFrame = document.createElement("iframe");
+  editorFrame.src = "https://embed.diagrams.net/?embed=1&proto=json&spin=1&modified=unsavedChanges&saveAndExit=1&noSaveBtn=0&noExitBtn=0";
+  container.appendChild(editorFrame);
+}
+
+function exitEditor() {
+  editorActive = false;
+  document.getElementById("edit-btn").classList.remove("active");
+  document.getElementById("edit-btn").textContent = "Edit Diagram";
+  document.getElementById("editor-container").style.display = "none";
+  document.getElementById("viewer-container").style.display = "flex";
+
+  if (editorFrame) {
+    editorFrame.remove();
+    editorFrame = null;
+  }
+
+  renderFromDrawio();
+}
+
+window.addEventListener("message", async (evt) => {
+  if (!editorFrame) return;
+
+  let msg;
+  try { msg = JSON.parse(evt.data); } catch { return; }
+
+  if (msg.event === "init") {
+    // Editor ready — send current XML
+    editorFrame.contentWindow.postMessage(JSON.stringify({
+      action: "load",
+      autosave: 0,
+      xml: drawioXml
+    }), "*");
+  } else if (msg.event === "save") {
+    // User clicked save
+    drawioXml = msg.xml;
+    await fetch(`/api/pathways/${currentPathway}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/xml" },
+      body: msg.xml
+    });
+    // Request export to stay in editor
+    editorFrame.contentWindow.postMessage(JSON.stringify({
+      action: "status",
+      message: "Saved",
+      modified: false
+    }), "*");
+  } else if (msg.event === "exit") {
+    // User clicked exit or save&exit
+    if (msg.xml) {
+      drawioXml = msg.xml;
+      await fetch("/pathway.drawio", {
+        method: "PUT",
+        headers: { "Content-Type": "application/xml" },
+        body: msg.xml
+      });
+    }
+    exitEditor();
+  }
+});
+
+// ─── DETAIL PANEL ────────────────────────────────────────────────────────────
+
+function openPanel(label) {
+  const data = ANALYTE_DATA[label];
+  if (!data) return;
+
+  sessionStorage.setItem("pv_panel", JSON.stringify({ type: "mapped", label }));
+  document.getElementById("panel-title").textContent = label;
+  // Show dataset count as subtitle
+  const dsCount = data.datasets ? data.datasets.length : 0;
+  document.getElementById("panel-source").textContent = `${dsCount} dataset${dsCount !== 1 ? "s" : ""} matched`;
+  document.getElementById("detail-panel").classList.remove("hidden");
+
+  const body = document.getElementById("panel-body");
+  body.innerHTML = "";
+
+  // Show overall status pill with continuous color
+  const { score, hasData: hasScoreData } = getOverlayScore(label);
+  if (hasScoreData && score !== null) {
+    const color = scoreToColor(score);
+    const pill = document.createElement("div");
+    pill.className = "status-row";
+    const statusText = score < 0.3 ? "LOW" : score > 0.7 ? "HIGH" : score < 0.4 ? "Low-Normal" : score > 0.6 ? "High-Normal" : "Normal";
+    // Use white text on dark colors, dark text on light colors
+    const textColor = (score < 0.35 || score > 0.72) ? "#fff" : "#333";
+    pill.innerHTML = `<span class="status-pill" style="background:${color};color:${textColor}">${statusText}</span>`;
+    body.appendChild(pill);
+  }
+
+  if (data.datasets && data.datasets.length > 0) {
+    // Compute shared X-axis date range across all datasets
+    let globalMinDate = Infinity, globalMaxDate = -Infinity;
+    for (const ds of data.datasets) {
+      for (const h of ds.history) {
+        if (h.value == null || h.value === "?") continue;
+        const t = new Date(h.date).getTime();
+        if (t < globalMinDate) globalMinDate = t;
+        if (t > globalMaxDate) globalMaxDate = t;
+      }
+    }
+    const sharedDateRange = { min: globalMinDate, max: globalMaxDate };
+
+    for (const ds of data.datasets) {
+      const sec = document.createElement("div");
+
+      const dsTitle = document.createElement("div");
+      dsTitle.style.cssText = "font-size:12px;font-weight:700;color:#555;margin-bottom:2px;margin-top:12px;text-transform:uppercase;letter-spacing:0.04em;";
+      dsTitle.textContent = ds.label;
+      sec.appendChild(dsTitle);
+
+      if (ds.analyte && ds.analyte !== label) {
+        const analyteName = document.createElement("div");
+        analyteName.style.cssText = "font-size:11px;color:#999;margin-bottom:6px;";
+        analyteName.textContent = `Tested as: ${ds.analyte}`;
+        sec.appendChild(analyteName);
+      }
+
+      // Show mapping note if present
+      if (ds.note) {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "note-box";
+        noteDiv.style.cssText = "font-size:11px;color:#888;font-style:italic;margin-bottom:8px;padding:6px 8px;";
+        noteDiv.textContent = ds.note;
+        sec.appendChild(noteDiv);
+      }
+
+      const validHistory = ds.history.filter(h => h.value !== null && h.value !== "?");
+      if (validHistory.length > 0) {
+        const sparkDiv = document.createElement("div");
+        sparkDiv.className = "chart-area";
+        sparkDiv.style.height = "140px";
+        sparkDiv.appendChild(renderSparkline(ds, sharedDateRange));
+        sec.appendChild(sparkDiv);
+      }
+
+      const table = document.createElement("table");
+      table.className = "history-table";
+      table.innerHTML = `<thead><tr><th>Date</th><th>Value</th><th>Unit</th><th>Status</th></tr></thead>`;
+      const tbody = document.createElement("tbody");
+      const sorted = [...ds.history].sort((a, b) => b.date.localeCompare(a.date));
+      sorted.forEach((row, i) => {
+        const tr = document.createElement("tr");
+        if (i === 0) tr.className = "latest";
+        const dotCls = statusDot(row.status);
+        tr.innerHTML = `
+          <td>${row.date}</td>
+          <td class="val">${row.value}</td>
+          <td style="color:#888">${ds.unit}</td>
+          <td class="status-cell"><span class="status-dot ${dotCls}"></span>${row.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      sec.appendChild(table);
+      body.appendChild(sec);
+    }
+  } else {
+    const nd = document.createElement("div");
+    nd.className = "no-data";
+    nd.textContent = "No direct measurement available";
+    body.appendChild(nd);
+  }
+}
+
+function statusDot(status) {
+  if (!status) return "dot-unknown";
+  const s = status.toLowerCase();
+  if (s.includes("high") || s.includes("low")) return "dot-high";
+  if (s.includes("normal")) return "dot-normal";
+  return "dot-unknown";
+}
+
+function renderSparkline(ds, sharedDateRange) {
+  const vals = ds.history
+    .filter(h => h.value !== null && h.value !== "?")
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (vals.length === 0) return document.createElement("svg");
+
+  const W = 340, H = 140, PAD_L = 52, PAD_R = 10, PAD_T = 8, PAD_B = 22;
+  const sparkSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  sparkSvg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  sparkSvg.setAttribute("width", "100%");
+
+  // Date-based X axis — use shared range so all charts align
+  const minDate = sharedDateRange ? sharedDateRange.min : Math.min(...vals.map(v => new Date(v.date).getTime()));
+  const maxDate = sharedDateRange ? sharedDateRange.max : Math.max(...vals.map(v => new Date(v.date).getTime()));
+  const dateRange = maxDate - minDate;
+  const scaleX = d => dateRange > 0
+    ? PAD_L + ((d - minDate) / dateRange) * (W - PAD_L - PAD_R)
+    : (W - PAD_L - PAD_R) / 2 + PAD_L;
+
+  // Y axis: minimum of 0, include ref range
+  const allVals = vals.map(v => +v.value);
+  const lo = ds.yMin != null ? ds.yMin : 0;
+  const hi = Math.max(...allVals, ds.refHigh || 0) * 1.15;
+  const yRange = hi - lo || 1;
+  const scaleY = v => H - PAD_B - ((v - lo) / yRange) * (H - PAD_T - PAD_B);
+  const plotLeft = PAD_L;
+  const plotRight = W - PAD_R;
+
+  // ── Y axis line ──
+  sparkSvg.appendChild(svgEl("line", {
+    x1: PAD_L, y1: PAD_T, x2: PAD_L, y2: H - PAD_B,
+    stroke: "#ddd", "stroke-width": 1
+  }));
+
+  // ── Reference range band + Y-axis ticks ──
+  // Reference range band and ticks (supports one-sided ranges)
+  const hasRefLow = ds.refLow != null;
+  const hasRefHigh = ds.refHigh != null;
+
+  if (hasRefLow && hasRefHigh) {
+    // Full band
+    const bandY1 = scaleY(ds.refHigh);
+    const bandY2 = scaleY(ds.refLow);
+    sparkSvg.appendChild(svgEl("rect", {
+      x: PAD_L, y: bandY1, width: plotRight - plotLeft, height: bandY2 - bandY1,
+      fill: "#e8f5e9", opacity: "0.6"
+    }));
+  } else if (hasRefLow) {
+    // Only lower bound — shade from refLow to top
+    const bandY2 = scaleY(ds.refLow);
+    sparkSvg.appendChild(svgEl("rect", {
+      x: PAD_L, y: PAD_T, width: plotRight - plotLeft, height: bandY2 - PAD_T,
+      fill: "#e8f5e9", opacity: "0.4"
+    }));
+  } else if (hasRefHigh) {
+    // Only upper bound — shade from bottom to refHigh
+    const bandY1 = scaleY(ds.refHigh);
+    sparkSvg.appendChild(svgEl("rect", {
+      x: PAD_L, y: bandY1, width: plotRight - plotLeft, height: (H - PAD_B) - bandY1,
+      fill: "#e8f5e9", opacity: "0.4"
+    }));
+  }
+
+  if (hasRefHigh) {
+    const bandY1 = scaleY(ds.refHigh);
+    sparkSvg.appendChild(svgEl("line", {
+      x1: PAD_L - 6, y1: bandY1, x2: PAD_L, y2: bandY1,
+      stroke: "#81c784", "stroke-width": 1.5
+    }));
+    sparkSvg.appendChild(svgEl("text", {
+      x: PAD_L - 8, y: bandY1 + 5, "text-anchor": "end",
+      fill: "#66bb6a", "font-size": 11, "font-weight": 600
+    }, String(ds.refHigh)));
+  }
+
+  if (hasRefLow) {
+    const bandY2 = scaleY(ds.refLow);
+    sparkSvg.appendChild(svgEl("line", {
+      x1: PAD_L - 6, y1: bandY2, x2: PAD_L, y2: bandY2,
+      stroke: "#81c784", "stroke-width": 1.5
+    }));
+    sparkSvg.appendChild(svgEl("text", {
+      x: PAD_L - 8, y: bandY2 + 5, "text-anchor": "end",
+      fill: "#66bb6a", "font-size": 11, "font-weight": 600
+    }, String(ds.refLow)));
+  }
+
+  if (ds.refMean != null) {
+    const meanY = scaleY(ds.refMean);
+    sparkSvg.appendChild(svgEl("line", {
+      x1: PAD_L, y1: meanY, x2: plotRight, y2: meanY,
+      stroke: "#a5d6a7", "stroke-width": 0.5, "stroke-dasharray": "3 3"
+    }));
+  }
+
+  // ── Zero tick ──
+  const zeroY = scaleY(0);
+  sparkSvg.appendChild(svgEl("text", {
+    x: PAD_L - 8, y: zeroY + 5, "text-anchor": "end",
+    fill: "#bbb", "font-size": 11
+  }, "0"));
+
+  // ── Unit label (rotated, left edge) ──
+  const unitText = svgEl("text", {
+    x: 8, y: (PAD_T + H - PAD_B) / 2,
+    "text-anchor": "middle", fill: "#bbb", "font-size": 11,
+    transform: `rotate(-90 8 ${(PAD_T + H - PAD_B) / 2})`
+  }, ds.unit || "");
+  sparkSvg.appendChild(unitText);
+
+  // ── X axis line ──
+  sparkSvg.appendChild(svgEl("line", {
+    x1: PAD_L, y1: H - PAD_B, x2: plotRight, y2: H - PAD_B,
+    stroke: "#ddd", "stroke-width": 1
+  }));
+
+  // ── Year tick marks on X axis ──
+  const minYear = new Date(minDate).getFullYear();
+  const maxYear = new Date(maxDate).getFullYear();
+  for (let y = minYear; y <= maxYear + 1; y++) {
+    const t = new Date(y, 0, 1).getTime();
+    if (t < minDate || t > maxDate) continue;
+    const x = scaleX(t);
+    sparkSvg.appendChild(svgEl("line", {
+      x1: x, y1: H - PAD_B, x2: x, y2: H - PAD_B + 4,
+      stroke: "#aaa", "stroke-width": 1
+    }));
+    sparkSvg.appendChild(svgEl("text", {
+      x: x, y: H - PAD_B + 14, "text-anchor": "middle",
+      fill: "#999", "font-size": 11
+    }, String(y)));
+  }
+
+  // ── Data line (skip for single point) ──
+  if (vals.length > 1) {
+    const pts = vals.map(v => `${scaleX(new Date(v.date).getTime())},${scaleY(+v.value)}`).join(" ");
+    sparkSvg.appendChild(svgEl("polyline", {
+      points: pts, fill: "none", stroke: "#5b9bd5", "stroke-width": "2"
+    }));
+  }
+
+  // ── Data points ──
+  vals.forEach(v => {
+    const s = (v.status || "").toLowerCase();
+    sparkSvg.appendChild(svgEl("circle", {
+      cx: scaleX(new Date(v.date).getTime()), cy: scaleY(+v.value), r: 4,
+      fill: (s.includes("high") || s.includes("low")) ? "#e74c3c" : "#27ae60"
+    }));
+  });
+
+  return sparkSvg;
+}
+
+function closePanel() {
+  document.getElementById("detail-panel").classList.add("hidden");
+  sessionStorage.removeItem("pv_panel");
+}
+
+// ─── PAN / ZOOM ──────────────────────────────────────────────────────────────
+
+let viewZoom = 1, viewX = 24, viewY = 24;
+const MIN_ZOOM = 0.2, MAX_ZOOM = 4;
+
+function applyView() {
+  const wrap = document.querySelector(".diagram-wrap");
+  wrap.style.transform = `translate(${viewX}px, ${viewY}px) scale(${viewZoom})`;
+  // Persist to sessionStorage so refresh preserves position
+  sessionStorage.setItem("pv_view", JSON.stringify({ zoom: viewZoom, x: viewX, y: viewY }));
+}
+
+function resetView() {
+  // Restore saved view if available for the current pathway
+  const saved = sessionStorage.getItem("pv_view");
+  if (saved) {
+    try {
+      const v = JSON.parse(saved);
+      viewZoom = v.zoom; viewX = v.x; viewY = v.y;
+    } catch { viewZoom = 1; viewX = 24; viewY = 24; }
+  } else {
+    viewZoom = 1; viewX = 24; viewY = 24;
+  }
+  applyView();
+}
+
+(function initPanZoom() {
+  const pane = document.getElementById("viewer-container");
+
+  // ── Wheel: scroll to zoom (mouse), two-finger pan (trackpad) ──
+  pane.addEventListener("wheel", (e) => {
+    e.preventDefault();
+
+    if (e.ctrlKey) {
+      // Pinch-zoom (macOS trackpad sends ctrlKey for pinch gestures)
+      zoomAt(e, -e.deltaY * 0.01);
+    } else if (Math.abs(e.deltaX) > 0 || e.deltaMode === 0 && Math.abs(e.deltaY) < 50) {
+      // Trackpad two-finger pan (small deltaY, has deltaX)
+      viewX -= e.deltaX;
+      viewY -= e.deltaY;
+      applyView();
+    } else {
+      // Mouse scroll wheel — zoom
+      const delta = -e.deltaY * 0.003;
+      zoomAt(e, delta);
+    }
+  }, { passive: false });
+
+  function zoomAt(e, delta) {
+    const rect = pane.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const bx = (mx - viewX) / viewZoom;
+    const by = (my - viewY) / viewZoom;
+    const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, viewZoom * (1 + delta)));
+    viewX = mx - bx * newZoom;
+    viewY = my - by * newZoom;
+    viewZoom = newZoom;
+    applyView();
+  }
+
+  // ── Click-drag to pan ──
+  let dragging = false, dragStartX, dragStartY, dragViewX, dragViewY;
+
+  pane.addEventListener("mousedown", (e) => {
+    // Only left-click, and not on a clickable node
+    if (e.button !== 0) return;
+    dragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragViewX = viewX;
+    dragViewY = viewY;
+    pane.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    viewX = dragViewX + (e.clientX - dragStartX);
+    viewY = dragViewY + (e.clientY - dragStartY);
+    applyView();
+  });
+
+  window.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+    pane.style.cursor = "";
+  });
+})();
+
+// ─── TAB SWITCHING & ALL DATA VIEW ────────────────────────────────────────────
+
+let allAnalytesData = null;
+let currentTab = "pathway";
+
+function switchTab(tab) {
+  currentTab = tab;
+  sessionStorage.setItem("pv_tab", tab);
+  document.getElementById("tab-pathway").classList.toggle("active", tab === "pathway");
+  document.getElementById("tab-alldata").classList.toggle("active", tab === "alldata");
+
+  const diagramPane = document.getElementById("viewer-container");
+  const allDataPane = document.getElementById("all-data-pane");
+  const pathwaySelect = document.getElementById("pathway-select");
+  const overlayToggle = document.querySelector(".overlay-toggle");
+  const timeSelect = document.getElementById("time-window");
+  const subtitleText = document.getElementById("subtitle-text");
+
+  if (tab === "pathway") {
+    diagramPane.style.display = "";
+    allDataPane.classList.remove("visible");
+    pathwaySelect.style.display = "";
+    overlayToggle.style.display = "";
+    timeSelect.style.display = "";
+    subtitleText.textContent = "Click any metabolite to see test history";
+  } else {
+    diagramPane.style.display = "none";
+    allDataPane.classList.add("visible");
+    pathwaySelect.style.display = "none";
+    overlayToggle.style.display = "none";
+    timeSelect.style.display = "none";
+    subtitleText.textContent = "Browse all test data by source";
+    if (!allAnalytesData) loadAllAnalytes();
+  }
+}
+
+async function loadAllAnalytes() {
+  try {
+    const resp = await fetch("/api/all-analytes");
+    allAnalytesData = await resp.json();
+  } catch (e) {
+    console.warn("Failed to load all analytes:", e);
+    return;
+  }
+  renderAllDataView();
+}
+
+function renderAllDataView() {
+  const pane = document.getElementById("all-data-pane");
+  pane.innerHTML = "";
+
+  for (const source of allAnalytesData.sources) {
+    const group = document.createElement("div");
+    group.className = "source-group";
+
+    const h3 = document.createElement("h3");
+    h3.textContent = `${source.name} (${source.analytes.length})`;
+    group.appendChild(h3);
+
+    const list = document.createElement("div");
+    list.className = "analyte-list";
+
+    for (const analyte of source.analytes) {
+      const chip = document.createElement("span");
+      chip.className = "analyte-chip";
+
+      // Color dot based on latest status
+      const ds = analyte.datasets[0];
+      if (ds && ds.history && ds.history.length > 0) {
+        const latest = [...ds.history].sort((a, b) => b.date.localeCompare(a.date))[0];
+        const score = valueToScore(latest.value, ds.refLow, ds.refHigh);
+        if (score !== null) {
+          const dot = document.createElement("span");
+          dot.className = "status-dot-mini";
+          dot.style.background = scoreToColor(score);
+          chip.appendChild(dot);
+        }
+      }
+
+      chip.appendChild(document.createTextNode(analyte.name));
+      chip.addEventListener("click", () => {
+        // Try to find cross-referenced data from the mapped analyte data
+        const resolved = resolveAnalyteLabel(analyte.name) || resolveAnalyteLabel(analyte.datasets[0]?.analyte);
+        if (resolved && ANALYTE_DATA[resolved]) {
+          openPanel(resolved);
+        } else {
+          openPanelDirect(analyte.name, analyte.datasets);
+        }
+      });
+      list.appendChild(chip);
+    }
+
+    group.appendChild(list);
+    pane.appendChild(group);
+  }
+}
+
+/** Open the detail panel with directly provided datasets (for All Data view). */
+function openPanelDirect(name, datasets) {
+  sessionStorage.setItem("pv_panel", JSON.stringify({ type: "direct", name, datasets }));
+  document.getElementById("panel-title").textContent = name;
+  const dsCount = datasets ? datasets.length : 0;
+  document.getElementById("panel-source").textContent = `${dsCount} dataset${dsCount !== 1 ? "s" : ""}`;
+  document.getElementById("detail-panel").classList.remove("hidden");
+
+  const body = document.getElementById("panel-body");
+  body.innerHTML = "";
+
+  // Status pill
+  if (datasets && datasets.length > 0) {
+    const ds = datasets[0];
+    const latest = ds.history && ds.history.length > 0
+      ? [...ds.history].sort((a, b) => b.date.localeCompare(a.date))[0] : null;
+    if (latest) {
+      const score = valueToScore(latest.value, ds.refLow, ds.refHigh);
+      if (score !== null) {
+        const color = scoreToColor(score);
+        const pill = document.createElement("div");
+        pill.className = "status-row";
+        const statusText = score < 0.3 ? "LOW" : score > 0.7 ? "HIGH" : score < 0.4 ? "Low-Normal" : score > 0.6 ? "High-Normal" : "Normal";
+        const textColor = (score < 0.35 || score > 0.72) ? "#fff" : "#333";
+        pill.innerHTML = `<span class="status-pill" style="background:${color};color:${textColor}">${statusText}</span>`;
+        body.appendChild(pill);
+      }
+    }
+  }
+
+  // Shared X range
+  let globalMinDate = Infinity, globalMaxDate = -Infinity;
+  for (const ds of (datasets || [])) {
+    for (const h of ds.history) {
+      if (h.value == null || h.value === "?") continue;
+      const t = new Date(h.date).getTime();
+      if (t < globalMinDate) globalMinDate = t;
+      if (t > globalMaxDate) globalMaxDate = t;
+    }
+  }
+  const sharedDateRange = { min: globalMinDate, max: globalMaxDate };
+
+  for (const ds of (datasets || [])) {
+    const sec = document.createElement("div");
+
+    const dsTitle = document.createElement("div");
+    dsTitle.style.cssText = "font-size:12px;font-weight:700;color:#555;margin-bottom:2px;margin-top:12px;text-transform:uppercase;letter-spacing:0.04em;";
+    dsTitle.textContent = ds.label;
+    sec.appendChild(dsTitle);
+
+    if (ds.note) {
+      const noteDiv = document.createElement("div");
+      noteDiv.className = "note-box";
+      noteDiv.style.cssText = "font-size:11px;color:#888;font-style:italic;margin-bottom:8px;padding:6px 8px;";
+      noteDiv.textContent = ds.note;
+      sec.appendChild(noteDiv);
+    }
+
+    const validHistory = ds.history.filter(h => h.value !== null && h.value !== "?");
+    if (validHistory.length > 0) {
+      const sparkDiv = document.createElement("div");
+      sparkDiv.className = "chart-area";
+      sparkDiv.style.height = "140px";
+      sparkDiv.appendChild(renderSparkline(ds, sharedDateRange));
+      sec.appendChild(sparkDiv);
+    }
+
+    const table = document.createElement("table");
+    table.className = "history-table";
+    table.innerHTML = `<thead><tr><th>Date</th><th>Value</th><th>Unit</th><th>Status</th></tr></thead>`;
+    const tbody = document.createElement("tbody");
+    const sorted = [...ds.history].sort((a, b) => b.date.localeCompare(a.date));
+    sorted.forEach((row, i) => {
+      const tr = document.createElement("tr");
+      if (i === 0) tr.className = "latest";
+      const dotCls = statusDot(row.status);
+      tr.innerHTML = `
+        <td>${row.date}</td>
+        <td class="val">${row.value}</td>
+        <td style="color:#888">${ds.unit}</td>
+        <td class="status-cell"><span class="status-dot ${dotCls}"></span>${row.status}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    sec.appendChild(table);
+    body.appendChild(sec);
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+(async () => {
+  await loadAnalyteData();
+  // Restore overlay state before first render (default: on)
+  if (sessionStorage.getItem("pv_overlay") === "") {
+    document.getElementById("overlay-toggle").checked = false;
+    overlayEnabled = false;
+  } else {
+    document.getElementById("overlay-legend").classList.add("visible");
+  }
+  await initPathways();
+
+  // Restore tab
+  const savedTab = sessionStorage.getItem("pv_tab");
+  if (savedTab && savedTab !== "pathway") {
+    switchTab(savedTab);
+  }
+
+  // Restore sidebar panel
+  const savedPanel = sessionStorage.getItem("pv_panel");
+  if (savedPanel) {
+    try {
+      const p = JSON.parse(savedPanel);
+      if (p.type === "mapped" && p.label && ANALYTE_DATA[p.label]) {
+        openPanel(p.label);
+      } else if (p.type === "direct" && p.name && p.datasets) {
+        openPanelDirect(p.name, p.datasets);
+      }
+    } catch {}
+  }
+})();
+</script>
+</body>
+</html>

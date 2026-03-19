@@ -1,0 +1,11 @@
+[project]
+name = "metabolic-pathway-overlay"
+version = "0.1.0"
+description = "View + edit metabolic pathway diagrams, and see overlays of your own test data on them "
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pillow",
+    "playwright",
+    "quart",
+]
